@@ -1,0 +1,302 @@
+import type {
+  Expense,
+  BankAccount,
+  FixedDeposit,
+  StockHolding,
+  MutualFund,
+  SplitWiseDebt,
+  User,
+} from "@/types";
+
+// ─── USER ───────────────────────────────────────────────────
+export const dummyUser: User = {
+  id: "u1",
+  name: "Arjun Mehta",
+  email: "arjun@gmail.com",
+  monthlyIncome: 75000,
+  currency: "INR",
+  gmailConnected: true,
+  splitWiseConnected: true,
+};
+
+// ─── EXPENSES ───────────────────────────────────────────────
+// Include variety — different categories, methods, sources
+// Have enough data to make charts look meaningful (15-20 entries)
+
+export const dummyExpenses: Expense[] = [
+  {
+    id: "e1",
+    amount: 340,
+    merchant: "Swiggy",
+    category: "Food",
+    date: "2024-01-20",
+    source: "gmail",
+    paymentMethod: "upi",
+  },
+  {
+    id: "e2",
+    amount: 1299,
+    merchant: "Netflix",
+    category: "Entertainment",
+    date: "2024-01-19",
+    source: "gmail",
+    paymentMethod: "credit_card",
+  },
+  {
+    id: "e3",
+    amount: 2400,
+    merchant: "Uber",
+    category: "Transport",
+    date: "2024-01-18",
+    source: "gmail",
+    paymentMethod: "credit_card",
+  },
+  {
+    id: "e4",
+    amount: 5500,
+    merchant: "Myntra",
+    category: "Shopping",
+    date: "2024-01-17",
+    source: "gmail",
+    paymentMethod: "credit_card",
+  },
+  {
+    id: "e5",
+    amount: 800,
+    merchant: "Apollo Pharmacy",
+    category: "Health",
+    date: "2024-01-16",
+    source: "manual",
+    paymentMethod: "upi",
+  },
+  {
+    id: "e6",
+    amount: 450,
+    merchant: "Zomato",
+    category: "Food",
+    date: "2024-01-15",
+    source: "gmail",
+    paymentMethod: "upi",
+  },
+  {
+    id: "e7",
+    amount: 1500,
+    merchant: "Electricity Bill",
+    category: "Utilities",
+    date: "2024-01-14",
+    source: "manual",
+    paymentMethod: "net_banking",
+  },
+  {
+    id: "e8",
+    amount: 999,
+    merchant: "Spotify",
+    category: "Entertainment",
+    date: "2024-01-13",
+    source: "gmail",
+    paymentMethod: "credit_card",
+  },
+  {
+    id: "e9",
+    amount: 3200,
+    merchant: "Big Basket",
+    category: "Food",
+    date: "2024-01-12",
+    source: "gmail",
+    paymentMethod: "upi",
+  },
+  {
+    id: "e10",
+    amount: 12000,
+    merchant: "MakeMyTrip",
+    category: "Travel",
+    date: "2024-01-10",
+    source: "gmail",
+    paymentMethod: "credit_card",
+  },
+  {
+    id: "e11",
+    amount: 600,
+    merchant: "Rapido",
+    category: "Transport",
+    date: "2024-01-09",
+    source: "gmail",
+    paymentMethod: "upi",
+  },
+  {
+    id: "e12",
+    amount: 2999,
+    merchant: "Udemy",
+    category: "Education",
+    date: "2024-01-08",
+    source: "manual",
+    paymentMethod: "credit_card",
+  },
+  {
+    id: "e13",
+    amount: 180,
+    merchant: "Tea Post",
+    category: "Food",
+    date: "2024-01-07",
+    source: "manual",
+    paymentMethod: "cash",
+  },
+  {
+    id: "e14",
+    amount: 4500,
+    merchant: "Croma",
+    category: "Shopping",
+    date: "2024-01-06",
+    source: "gmail",
+    paymentMethod: "credit_card",
+  },
+  {
+    id: "e15",
+    amount: 750,
+    merchant: "Cult.fit",
+    category: "Health",
+    date: "2024-01-05",
+    source: "gmail",
+    paymentMethod: "upi",
+  },
+];
+
+// ─── BANK ACCOUNTS ──────────────────────────────────────────
+export const dummyBankAccounts: BankAccount[] = [
+  {
+    id: "b1",
+    type: "bank",
+    name: "HDFC Savings Account",
+    amount: 45000,
+    institution: "HDFC",
+    accountType: "savings",
+    accountNumberLast4: "4521",
+    lastUpdated: "2024-01-20",
+  },
+  {
+    id: "b2",
+    type: "bank",
+    name: "SBI Savings Account",
+    amount: 12000,
+    institution: "SBI",
+    accountType: "savings",
+    accountNumberLast4: "8834",
+    lastUpdated: "2024-01-20",
+  },
+];
+
+// ─── FIXED DEPOSITS ─────────────────────────────────────────
+export const dummyFDs: FixedDeposit[] = [
+  {
+    id: "fd1",
+    type: "fd",
+    name: "SBI FD - 1 Year",
+    amount: 106750,
+    institution: "SBI",
+    principal: 100000,
+    interestRate: 6.75,
+    startDate: "2023-07-01",
+    maturityDate: "2024-07-01",
+    maturityAmount: 106750,
+    lastUpdated: "2024-01-01",
+  },
+  {
+    id: "fd2",
+    type: "fd",
+    name: "HDFC FD - 2 Year",
+    amount: 215000,
+    institution: "HDFC",
+    principal: 200000,
+    interestRate: 7.25,
+    startDate: "2023-01-15",
+    maturityDate: "2025-01-15",
+    maturityAmount: 230000,
+    lastUpdated: "2024-01-01",
+  },
+];
+
+// ─── STOCKS ─────────────────────────────────────────────────
+export const dummyStocks: StockHolding[] = [
+  {
+    id: "s1",
+    type: "stock",
+    name: "Reliance Industries",
+    ticker: "RELIANCE",
+    quantity: 10,
+    buyPrice: 2200,
+    currentPrice: 2456,
+    amount: 24560,
+    profitLoss: 2560,
+    institution: "Zerodha",
+    lastUpdated: "2024-01-20",
+  },
+  {
+    id: "s2",
+    type: "stock",
+    name: "Tata Consultancy Services",
+    ticker: "TCS",
+    quantity: 5,
+    buyPrice: 3400,
+    currentPrice: 3780,
+    amount: 18900,
+    profitLoss: 1900,
+    institution: "Zerodha",
+    lastUpdated: "2024-01-20",
+  },
+];
+
+// ─── MUTUAL FUNDS ────────────────────────────────────────────
+export const dummyMutualFunds: MutualFund[] = [
+  {
+    id: "mf1",
+    type: "mutual_fund",
+    name: "Mirae Asset Large Cap Fund",
+    units: 245.6,
+    nav: 98.4,
+    investedAmount: 20000,
+    currentValue: 24167,
+    amount: 24167,
+    institution: "Groww",
+    lastUpdated: "2024-01-20",
+  },
+];
+
+// ─── SPLITWISE ──────────────────────────────────────────────
+export const dummySplitwiseDebts: SplitWiseDebt[] = [
+  {
+    id: "sw1",
+    personName: "Rahul Shah",
+    amount: 1200,
+    direction: "you_owe",
+    groupName: "Goa Trip",
+    lastActivity: "2024-01-18",
+    currency: "INR",
+  },
+  {
+    id: "sw2",
+    personName: "Priya Patel",
+    amount: 650,
+    direction: "they_owe",
+    groupName: "Flat Expenses",
+    lastActivity: "2024-01-17",
+    currency: "INR",
+  },
+  {
+    id: "sw3",
+    personName: "Karan Joshi",
+    amount: 2300,
+    direction: "they_owe",
+    groupName: "Mumbai Trip",
+    lastActivity: "2024-01-10",
+    currency: "INR",
+  },
+  {
+    id: "sw4",
+    personName: "Sneha Gupta",
+    amount: 800,
+    direction: "you_owe",
+    groupName: "Dinner",
+    lastActivity: "2024-01-15",
+    currency: "INR",
+  },
+];
