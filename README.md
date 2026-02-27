@@ -18,10 +18,6 @@ An AI-powered personal finance dashboard that aggregates expenses, assets, and a
 - ShadCN UI
 - React Router
 
-## 📸 Screenshots
-
-(Add screenshots later)
-
 ## 📦 Future Improvements
 
 - AI financial health score
