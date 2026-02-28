@@ -18,6 +18,8 @@ import {
 
 import { Card, CardContent } from "@/components/ui/card";
 
+import CategoryPieChart from "@/components/CategoryPieChart";
+
 const Dashboard = () => {
   const monthlyExpenses = calculateMonthlyExpenses(dummyExpenses);
   const totalAssets = calculateTotalAssets(
@@ -34,43 +36,47 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <Card>
-        <CardContent className="p-6">
-          <p className="text-sm text-muted-foreground">Total Net Worth</p>
-          <h2 className="text-2xl font-bold mt-2">
-            ₹ {netWorth.toLocaleString()}
-          </h2>
-        </CardContent>
-      </Card>
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-sm text-muted-foreground">Total Net Worth</p>
+            <h2 className="text-2xl font-bold mt-2">
+              ₹ {netWorth.toLocaleString()}
+            </h2>
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardContent className="p-6">
-          <p className="text-sm text-muted-foreground">Monthly Expenses</p>
-          <h2 className="text-2xl font-bold mt-2">
-            ₹ {monthlyExpenses.toLocaleString()}
-          </h2>
-        </CardContent>
-      </Card>
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-sm text-muted-foreground">Monthly Expenses</p>
+            <h2 className="text-2xl font-bold mt-2">
+              ₹ {monthlyExpenses.toLocaleString()}
+            </h2>
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardContent className="p-6">
-          <p className="text-sm text-muted-foreground">Monthly Savings</p>
-          <h2 className="text-2xl font-bold mt-2">
-            ₹ {monthlySavings.toLocaleString()}
-          </h2>
-        </CardContent>
-      </Card>
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-sm text-muted-foreground">Monthly Savings</p>
+            <h2 className="text-2xl font-bold mt-2">
+              ₹ {monthlySavings.toLocaleString()}
+            </h2>
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardContent className="p-6">
-          <p className="text-sm text-muted-foreground">Total Debt</p>
-          <h2 className="text-2xl font-bold mt-2 text-red-600">
-            ₹ {totalDebt.toLocaleString()}
-          </h2>
-        </CardContent>
-      </Card>
-    </div>
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-sm text-muted-foreground">Total Debt</p>
+            <h2 className="text-2xl font-bold mt-2 text-red-600">
+              ₹ {totalDebt.toLocaleString()}
+            </h2>
+          </CardContent>
+        </Card>
+      </div>
+
+      <CategoryPieChart />
+    </>
   );
 };
 

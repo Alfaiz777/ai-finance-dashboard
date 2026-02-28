@@ -41,3 +41,39 @@ export const calculateMonthlySavings = (
 ) => {
   return income - monthlyExpenses;
 };
+
+//get expense breakdown by category - pie chart
+export const getExpenseBreakdownByCategory = (expenses: Expense[]) => {
+  const categoryMap: Record<string, number> = {};
+
+  expenses.forEach((expense) => {
+    if (!categoryMap[expense.category]) {
+      categoryMap[expense.category] = 0;
+    }
+    categoryMap[expense.category] += expense.amount;
+  });
+
+  return Object.entries(categoryMap).map(([key, value]) => ({
+    name: key,
+    value,
+  }));
+};
+
+export const getMonthlySpendingTrend = (expenses: Expense[]) => {
+  const monthMap = expenses.reduce<Record<string, number>>((acc, expense) => {
+    const month = expense.date.slice(0, 7); // YYYY-MM
+
+    if (!acc[month]) {
+      acc[month] = 0;
+    }
+
+    acc[month] += expense.amount;
+
+    return acc;
+  }, {});
+
+  return Object.entries(monthMap).map(([month, value]) => ({
+    month,
+    value,
+  }));
+};
