@@ -19,6 +19,8 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 
 import CategoryPieChart from "@/components/CategoryPieChart";
+import MonthlyBarChart from "@/components/MonthlyBarChart";
+import RecentTransaction from "@/components/RecentTransactions";
 
 const Dashboard = () => {
   const monthlyExpenses = calculateMonthlyExpenses(dummyExpenses);
@@ -74,8 +76,13 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
-
-      <CategoryPieChart />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <CategoryPieChart />
+        <MonthlyBarChart />
+      </div>
+      <div>
+        <RecentTransaction />
+      </div>
     </>
   );
 };

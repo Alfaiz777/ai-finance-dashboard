@@ -42,20 +42,22 @@ export const calculateMonthlySavings = (
   return income - monthlyExpenses;
 };
 
-//get expense breakdown by category - pie chart
 export const getExpenseBreakdownByCategory = (expenses: Expense[]) => {
-  const categoryMap: Record<string, number> = {};
+  const categoryTotals: Record<string, number> = {};
 
   expenses.forEach((expense) => {
-    if (!categoryMap[expense.category]) {
-      categoryMap[expense.category] = 0;
+    const category = expense.category;
+
+    if (!categoryTotals[category]) {
+      categoryTotals[category] = 0;
     }
-    categoryMap[expense.category] += expense.amount;
+
+    categoryTotals[category] += expense.amount;
   });
 
-  return Object.entries(categoryMap).map(([key, value]) => ({
-    name: key,
-    value,
+  return Object.keys(categoryTotals).map((category) => ({
+    name: category,
+    value: categoryTotals[category],
   }));
 };
 
@@ -72,8 +74,10 @@ export const getMonthlySpendingTrend = (expenses: Expense[]) => {
     return acc;
   }, {});
 
-  return Object.entries(monthMap).map(([month, value]) => ({
-    month,
-    value,
-  }));
+  return Object.entries(monthMap)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([month, value]) => ({
+      month,
+      value,
+    }));
 };
