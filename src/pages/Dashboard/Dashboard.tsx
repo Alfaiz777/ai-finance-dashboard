@@ -15,12 +15,15 @@ import {
   dummyStocks,
   dummyUser,
 } from "@/data/dummy";
-
-import { Card, CardContent } from "@/components/ui/card";
-
-import CategoryPieChart from "@/components/CategoryPieChart";
-import MonthlyBarChart from "@/components/MonthlyBarChart";
-import RecentTransaction from "@/components/RecentTransactions";
+import DashboardCard from "@/components/Dashboard/DashboardCard";
+import { Wallet, TrendingUp, TrendingDown, CreditCard } from "lucide-react";
+import DashboardPieChart from "@/components/Dashboard/DashboardPieChart";
+import DashboardBarChart from "@/components/Dashboard/DashboardBarChart";
+import RecentTransactions from "@/components/Dashboard/RecentTransaction";
+import {
+  getExpenseBreakdownByCategory,
+  getMonthlySpendingTrend,
+} from "@/utils/financial-calculations";
 
 const Dashboard = () => {
   const monthlyExpenses = calculateMonthlyExpenses(dummyExpenses);
@@ -37,51 +40,66 @@ const Dashboard = () => {
     monthlyExpenses,
   );
 
+  const rawData = getExpenseBreakdownByCategory(dummyExpenses);
+
+  const pieData = rawData.map((item, index) => ({
+    category: item.name,
+    value: item.value,
+    fill: ["#6366f1", "#22c55e", "#f59e0b", "#ef4444", "#3b82f6"][index % 5],
+  }));
+
+  const rawBarData = getMonthlySpendingTrend(dummyExpenses);
+
+  const barData = rawBarData.map((item, index) => ({
+    month: item.month,
+    value: item.value,
+    fill: ["#6366f1", "#22c55e", "#f59e0b", "#ef4444", "#3b82f6"][index % 5],
+  }));
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardContent className="p-6">
-            <p className="text-sm text-muted-foreground">Total Net Worth</p>
-            <h2 className="text-2xl font-bold mt-2">
-              ₹ {netWorth.toLocaleString()}
-            </h2>
-          </CardContent>
-        </Card>
+        <DashboardCard
+          title="Total Net Worth"
+          value={`₹ ${netWorth.toLocaleString()}`}
+          icon={<Wallet className="h-4 w-4" />}
+        />
 
-        <Card>
-          <CardContent className="p-6">
-            <p className="text-sm text-muted-foreground">Monthly Expenses</p>
-            <h2 className="text-2xl font-bold mt-2">
-              ₹ {monthlyExpenses.toLocaleString()}
-            </h2>
-          </CardContent>
-        </Card>
+        <DashboardCard
+          title="Monthly Expenses"
+          value={`₹ ${monthlyExpenses.toLocaleString()}`}
+          icon={<TrendingDown className="h-4 w-4" />}
+        />
 
-        <Card>
-          <CardContent className="p-6">
-            <p className="text-sm text-muted-foreground">Monthly Savings</p>
-            <h2 className="text-2xl font-bold mt-2">
-              ₹ {monthlySavings.toLocaleString()}
-            </h2>
-          </CardContent>
-        </Card>
+        <DashboardCard
+          title="Monthly Savings"
+          value={`₹ ${monthlySavings.toLocaleString()}`}
+          icon={<TrendingUp className="h-4 w-4" />}
+          valueClassName="text-green-600"
+        />
 
-        <Card>
-          <CardContent className="p-6">
-            <p className="text-sm text-muted-foreground">Total Debt</p>
-            <h2 className="text-2xl font-bold mt-2 text-red-600">
-              ₹ {totalDebt.toLocaleString()}
-            </h2>
-          </CardContent>
-        </Card>
+        <DashboardCard
+          title="Total Debt"
+          value={`₹ ${totalDebt.toLocaleString()}`}
+          icon={<CreditCard className="h-4 w-4" />}
+          valueClassName="text-red-600"
+        />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <CategoryPieChart />
-        <MonthlyBarChart />
+        <DashboardPieChart
+          title="Expense Breakdown"
+          description="Spending by category"
+          chartData={pieData}
+          footerText="Based on current month expenses"
+        />
+        <DashboardBarChart
+          title="Monthly Spending Trend"
+          description="Spending over recent months"
+          chartData={barData}
+          footerText="Based on recorded expenses"
+        />
       </div>
       <div>
-        <RecentTransaction />
+        <RecentTransactions />
       </div>
     </>
   );
