@@ -460,7 +460,7 @@ export const dummyMutualFunds: MutualFund[] = [
 ];
 
 // ─── SPLITWISE ──────────────────────────────────────────────
-export const dummySplitwiseDebts: SplitWiseDebt[] = [
+export const dummySplitWiseDebts: SplitWiseDebt[] = [
   {
     id: "sw1",
     personName: "Rahul Shah",

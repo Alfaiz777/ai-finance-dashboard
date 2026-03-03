@@ -11,7 +11,7 @@ import {
   dummyBankAccounts,
   dummyFDs,
   dummyMutualFunds,
-  dummySplitwiseDebts,
+  dummySplitWiseDebts,
   dummyStocks,
   dummyUser,
 } from "@/data/dummy";
@@ -33,7 +33,7 @@ const Dashboard = () => {
     dummyMutualFunds,
     dummyStocks,
   );
-  const totalDebt = calculateTotalDebt(dummySplitwiseDebts);
+  const totalDebt = calculateTotalDebt(dummySplitWiseDebts);
   const netWorth = calculateNetWorth(totalAssets, totalDebt);
   const monthlySavings = calculateMonthlySavings(
     dummyUser.monthlyIncome,
