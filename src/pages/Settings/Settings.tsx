@@ -1,5 +1,6 @@
 import MonthlyIncomeCard from "@/components/Settings/MonthlyIncomeCard";
 import IntegrationCard from "@/components/Settings/IntegrationCard";
+import { Mail, Link } from "lucide-react";
 
 const Settings = () => {
   return (
@@ -18,11 +19,15 @@ const Settings = () => {
         <IntegrationCard
           title="Gmail"
           description="Automatically track expenses from payment emails."
+          icon={<Mail className="h-5 w-5" />}
+          connected={true}
         />
 
         <IntegrationCard
           title="SplitWise"
           description="Import shared expenses and debts."
+          icon={<Link className="h-5 w-5" />}
+          connected={false}
         />
       </section>
     </div>
