@@ -26,7 +26,10 @@ const IntegrationCard = ({ title, description, connected, icon }: Props) => {
           {connected ? "Connected" : "Not Connected"}
         </Badge>
 
-        <Button variant={connected ? "destructive" : "default"}>
+        <Button
+          variant={connected ? "destructive" : "default"}
+          className="cursor-pointer"
+        >
           {connected ? "Disconnect" : "Connect"}
         </Button>
       </CardContent>
