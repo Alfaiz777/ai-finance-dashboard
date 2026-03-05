@@ -30,8 +30,8 @@ const Dashboard = () => {
   const totalAssets = calculateTotalAssets(
     dummyBankAccounts,
     dummyFDs,
-    dummyMutualFunds,
     dummyStocks,
+    dummyMutualFunds,
   );
   const totalDebt = calculateTotalDebt(dummySplitWiseDebts);
   const netWorth = calculateNetWorth(totalAssets, totalDebt);
@@ -57,49 +57,51 @@ const Dashboard = () => {
   }));
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <DashboardCard
-          title="Total Net Worth"
-          value={`₹ ${netWorth.toLocaleString()}`}
-          icon={<Wallet className="h-4 w-4" />}
-        />
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <DashboardCard
+            title="Total Net Worth"
+            value={`₹ ${netWorth.toLocaleString()}`}
+            icon={<Wallet className="h-4 w-4" />}
+          />
 
-        <DashboardCard
-          title="Monthly Expenses"
-          value={`₹ ${monthlyExpenses.toLocaleString()}`}
-          icon={<TrendingDown className="h-4 w-4" />}
-        />
+          <DashboardCard
+            title="Monthly Expenses"
+            value={`₹ ${monthlyExpenses.toLocaleString()}`}
+            icon={<TrendingDown className="h-4 w-4" />}
+          />
 
-        <DashboardCard
-          title="Monthly Savings"
-          value={`₹ ${monthlySavings.toLocaleString()}`}
-          icon={<TrendingUp className="h-4 w-4" />}
-          valueClassName="text-green-600"
-        />
+          <DashboardCard
+            title="Monthly Savings"
+            value={`₹ ${monthlySavings.toLocaleString()}`}
+            icon={<TrendingUp className="h-4 w-4" />}
+            valueClassName="text-green-600"
+          />
 
-        <DashboardCard
-          title="Total Debt"
-          value={`₹ ${totalDebt.toLocaleString()}`}
-          icon={<CreditCard className="h-4 w-4" />}
-          valueClassName="text-red-600"
-        />
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <DashboardPieChart
-          title="Expense Breakdown"
-          description="Spending by category"
-          chartData={pieData}
-          footerText="Based on current month expenses"
-        />
-        <DashboardBarChart
-          title="Monthly Spending Trend"
-          description="Spending over recent months"
-          chartData={barData}
-          footerText="Based on recorded expenses"
-        />
-      </div>
-      <div>
-        <RecentTransactions />
+          <DashboardCard
+            title="Total Debt"
+            value={`₹ ${totalDebt.toLocaleString()}`}
+            icon={<CreditCard className="h-4 w-4" />}
+            valueClassName="text-red-600"
+          />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <DashboardPieChart
+            title="Expense Breakdown"
+            description="Spending by category"
+            chartData={pieData}
+            footerText="Based on current month expenses"
+          />
+          <DashboardBarChart
+            title="Monthly Spending Trend"
+            description="Spending over recent months"
+            chartData={barData}
+            footerText="Based on recorded expenses"
+          />
+        </div>
+        <div>
+          <RecentTransactions />
+        </div>
       </div>
     </>
   );

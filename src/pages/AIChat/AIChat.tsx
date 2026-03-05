@@ -98,15 +98,16 @@ const AIChat = () => {
               )}
             </div>
           ))}
+          {isTyping && (
+            <div className="flex justify-start">
+              <div className="bg-muted rounded-xl px-4 py-2 text-sm">
+                AI is typing...
+              </div>
+            </div>
+          )}
           <div ref={bottomRef} />
         </div>
-        {isTyping && (
-          <div className="flex justify-start">
-            <div className="bg-muted rounded-xl px-4 py-2 text-sm">
-              AI is typing...
-            </div>
-          </div>
-        )}
+
         <div className="border-t p-4 flex gap-2">
           <Input
             value={input}

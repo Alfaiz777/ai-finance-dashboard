@@ -1,12 +1,15 @@
 import type { Expense, SplitWiseDebt } from "@/types";
 
 // monthly expenses
-export const calculateMonthlyExpenses = (expenses: Expense[]) => {
-  return expenses.reduce((total, expense) => {
-    return total + expense.amount;
-  }, 0);
+export const calculateMonthlyExpenses = (
+  expenses: Expense[],
+  month?: string,
+) => {
+  const targetMonth = month || new Date().toISOString().slice(0, 7);
+  return expenses
+    .filter((e) => e.date.startsWith(targetMonth))
+    .reduce((total, expense) => total + expense.amount, 0);
 };
-
 // total assets
 export const calculateTotalAssets = (
   bankAccounts: { amount: number }[],
