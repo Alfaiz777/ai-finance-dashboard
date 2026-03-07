@@ -1,10 +1,19 @@
 # 💰 AI Finance Dashboard
 
-A modern fintech-style personal finance dashboard that aggregates financial data from multiple sources and transforms it into clear insights.
+> Managing personal finances across multiple platforms is fragmented.
+>
+> This project explores how a modern fintech dashboard can aggregate financial data, generate insights, and provide an AI-powered financial advisor — all within a clean and scalable architecture.
 
-The application allows users to track expenses, monitor assets, manage shared debts, and interact with an AI-powered financial advisor — all from a single interface.
+A modern fintech-style personal finance dashboard that aggregates financial data from multiple sources and transforms it into clear insights. The application allows users to track expenses, monitor assets, manage shared debts, and interact with an AI-powered financial advisor — all from a single interface.
 
-> This project focuses on building a clean, scalable frontend architecture before integrating real APIs and AI services in the backend phase.
+---
+
+## 📌 Project Status
+
+- ✅ Frontend UI — In Progress (UI refinements underway)
+- 🔜 Frontend Deployment — Coming Soon
+- 🔜 Screenshots & Live Demo — Coming Soon
+- 🔜 Backend Development — Next Phase
 
 ---
 
@@ -44,12 +53,7 @@ Transforms raw financial data into insights.
 
 Displays the user's total wealth across multiple asset classes.
 
-Assets supported:
-
-- Bank accounts
-- Fixed deposits
-- Stocks
-- Mutual funds
+Assets supported: Bank accounts · Fixed deposits · Stocks · Mutual funds
 
 Each asset displays important metadata like investment value, maturity date (FDs), and profit/loss indicators.
 
@@ -85,38 +89,66 @@ Control how financial data enters the system.
 
 ---
 
-## 🧠 Architecture Highlights
+## 🏗 System Architecture
+
+```
+User
+   ↓
+React Frontend (TypeScript + TailwindCSS)
+   ↓
+Backend API (Next Phase — Node.js + Express)
+   ↓
+Database (MongoDB)
+   ↓
+External Integrations
+   ├── Gmail API       → Automated expense parsing
+   └── Splitwise API   → Shared debt syncing
+        ↓
+AI Layer (LLM Integration)
+   └── Personalized financial insights
+```
+
+---
+
+## 🧠 Frontend Architecture
 
 The frontend is designed using modular SaaS-style architecture with clear separation of concerns.
 
 ```
-Pages
- ├── Dashboard
- ├── Transactions
- ├── Spend Analysis
- ├── Assets
- ├── Split & Owe
- ├── AI Advisor
- └── Settings
-
-Components
- ├── layout
- ├── charts
- ├── tables
- ├── assets
- ├── splitwise
- └── settings
-
-Utils
- └── financial calculations
+src/
+ ├── pages/
+ │    ├── Dashboard
+ │    ├── Transactions
+ │    ├── Spend Analysis
+ │    ├── Assets
+ │    ├── Split & Owe
+ │    ├── AI Advisor
+ │    └── Settings
+ │
+ ├── components/
+ │    ├── layout/
+ │    ├── charts/
+ │    ├── tables/
+ │    ├── assets/
+ │    ├── splitwise/
+ │    └── settings/
+ │
+ └── utils/
+      └── financial calculations
 ```
 
-**Key design principles:**
+---
 
-- Reusable UI components
-- Derived financial calculations
-- Modular feature-based structure
-- Scalable integration-ready architecture
+## 🧩 Engineering Patterns Used
+
+This project demonstrates several important frontend engineering patterns:
+
+- **Component-driven architecture** — reusable, self-contained UI components
+- **Derived financial calculations** — computed values from raw transaction data
+- **Data transformation pipelines** — filter → search → sort → paginate
+- **Integration management UI** — status indicators and connection controls
+- **Reusable chart components** — shared Recharts wrappers for consistent visuals
+- **Modular feature-based folder structure** — scalable and maintainable codebase
 
 ---
 
@@ -131,7 +163,7 @@ Custom utility functions power the analytics layer:
 - Category-based spending breakdown
 - Monthly spending trends
 
-These calculations power charts, insights, and dashboard summaries.
+These calculations power charts, insights, and dashboard summaries across the entire app.
 
 ---
 
@@ -149,10 +181,33 @@ These calculations power charts, insights, and dashboard summaries.
 
 ---
 
-## 📍 Project Status
+## ⚙️ Run Locally
 
-- ✅ Frontend application completed
-- 🔜 Backend development starting next
+**Clone the project**
+
+```bash
+git clone https://github.com/your-username/ai-finance-dashboard.git
+```
+
+**Go to project directory**
+
+```bash
+cd ai-finance-dashboard
+```
+
+**Install dependencies**
+
+```bash
+npm install
+```
+
+**Start development server**
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
@@ -180,12 +235,11 @@ The next phase will focus on building the data and intelligence layer of the pla
 
 ### 🗄 Database Layer
 
-- Store transactions
-- Store assets
+- Store transactions and assets
 - Store user financial preferences
 - Maintain historical financial records
 
-**Backend stack will include:** Node.js · Express · MongoDB · AI API integration
+**Backend stack:** Node.js · Express · MongoDB · AI API integration
 
 ---
 
