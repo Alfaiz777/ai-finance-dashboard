@@ -19,12 +19,8 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/expenses", expenseRoutes);
-app.use("/api/expenses", expenseRoutes);
-app.use("api/expenses/:id", expenseRoutes);
 app.use("/api/assets", assetRoutes);
-app.use("/api/assets", assetRoutes);
-app.use("/api/assets/:id", assetRoutes);
-app.use("/api/splitWise/debts", splitWiseRoutes);
+app.use("/api/splitWise", splitWiseRoutes);
 
 const PORT = process.env.PORT || 5000;
 

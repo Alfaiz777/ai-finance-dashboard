@@ -23,9 +23,9 @@ export const deleteAsset = async (req: any, res: Response) => {
     return res.status(404).json({ message: "Asset not found" });
   }
   if (asset.userId.toString() !== req.user.id) {
-    return res.status(400).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized" });
   }
   await asset.deleteOne();
 
-  res.json({ message: "Asset Deleted" });
+  res.json({ message: "Asset Deleted successfully" });
 };
