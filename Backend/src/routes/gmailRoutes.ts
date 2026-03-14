@@ -1,9 +1,9 @@
 import express from "express";
-import { chatWithAI } from "../controllers/aiController";
+import { syncGmail } from "../controllers/gmailController";
 import { protect } from "../middleware/authMiddleware";
 
 const router = express.Router();
 
-router.post("/chat", protect, chatWithAI);
+router.post("/sync", protect, syncGmail);
 
 export default router;

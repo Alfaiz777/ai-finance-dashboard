@@ -8,6 +8,8 @@ import userRoutes from "./routes/userRoutes";
 import expenseRoutes from "./routes/expenseRoutes";
 import assetRoutes from "./routes/assetRoutes";
 import splitWiseRoutes from "./routes/splitwiseRoutes";
+import aiRoutes from "./routes/aiRoutes";
+import gmailRoutes from "./routes/gmailRoutes";
 
 dotenv.config();
 
@@ -21,6 +23,8 @@ app.use("/api/user", userRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/assets", assetRoutes);
 app.use("/api/splitWise", splitWiseRoutes);
+app.use("/api/ai", aiRoutes);
+app.use("/api/gmail", gmailRoutes);
 
 const PORT = process.env.PORT || 5000;
 
