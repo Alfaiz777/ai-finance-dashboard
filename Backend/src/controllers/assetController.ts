@@ -2,9 +2,12 @@ import { Request, Response } from "express";
 import Asset from "../models/Asset";
 
 export const getAssets = async (req: any, res: Response) => {
-  const assets = await Asset.find({ userId: req.user.id });
-
-  res.json(assets);
+  try {
+    const assets = await Asset.find({ userId: req.user.id });
+    res.json(assets);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 export const createAsset = async (req: any, res: Response) => {

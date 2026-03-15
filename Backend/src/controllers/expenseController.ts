@@ -2,15 +2,22 @@ import { Request, Response } from "express";
 import Expense from "../models/Expense";
 
 export const getExpense = async (req: any, res: Response) => {
-  const expenses = await Expense.findOne({ userId: req.user.id }).sort({
-    date: -1,
-  });
+  try {
+    const expenses = await Expense.find({ userId: req.user.id }).sort({
+      date: -1,
+    });
 
-  res.json(expenses);
+    res.json(expenses);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 export const createExpense = async (req: any, res: Response) => {
   const { amount, merchant, category, date, paymentMethod } = req.body;
+
+  console.log("Expense Body:", req.body);
 
   const expense = await Expense.create({
     userId: req.user.id,

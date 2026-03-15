@@ -6,4 +6,7 @@ export const ROUTES = {
   SPLITWISE: "/splitwise",
   AI_CHAT: "/ai-chat",
   SETTINGS: "/settings",
+
+  LOGIN: "/login",
+  REGISTER: "/register",
 };

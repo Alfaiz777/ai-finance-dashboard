@@ -11,6 +11,8 @@ import Settings from "@/pages/Settings";
 import Analytics from "@/pages/Analytics";
 import SplitWise from "@/pages/Splitwise";
 import AIChat from "@/pages/AIChat";
+import { LogIn } from "lucide-react";
+import Register from "@/pages/Register/Register";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +45,14 @@ const router = createBrowserRouter([
       {
         path: ROUTES.SETTINGS,
         element: <Settings />,
+      },
+      {
+        path: ROUTES.LOGIN,
+        element: <LogIn />,
+      },
+      {
+        path: ROUTES.REGISTER,
+        element: <Register />,
       },
     ],
   },
