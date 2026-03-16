@@ -1,5 +1,6 @@
 export const ROUTES = {
-  DASHBOARD: "/",
+  LANDING: "/",
+  DASHBOARD: "/dashboard",
   EXPENSES: "/expenses",
   ANALYTICS: "/analytics",
   ASSETS: "/assets",

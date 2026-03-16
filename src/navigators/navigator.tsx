@@ -11,12 +11,32 @@ import Settings from "@/pages/Settings";
 import Analytics from "@/pages/Analytics";
 import SplitWise from "@/pages/Splitwise";
 import AIChat from "@/pages/AIChat";
-import { LogIn } from "lucide-react";
-import Register from "@/pages/Register/Register";
+import Register from "@/pages/Register";
+import Login from "@/pages/Login";
+import LandingPage from "@/pages/LandingPage";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const router = createBrowserRouter([
+  //Public Routes
   {
-    element: <AppLayout />,
+    path: "/",
+    element: <LandingPage />,
+  },
+  {
+    path: ROUTES.LOGIN,
+    element: <Login />,
+  },
+  {
+    path: ROUTES.REGISTER,
+    element: <Register />,
+  },
+  //Protected Routes
+  {
+    element: (
+      <ProtectedRoute>
+        <AppLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: ROUTES.DASHBOARD,
@@ -45,14 +65,6 @@ const router = createBrowserRouter([
       {
         path: ROUTES.SETTINGS,
         element: <Settings />,
-      },
-      {
-        path: ROUTES.LOGIN,
-        element: <LogIn />,
-      },
-      {
-        path: ROUTES.REGISTER,
-        element: <Register />,
       },
     ],
   },

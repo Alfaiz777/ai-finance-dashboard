@@ -11,14 +11,22 @@ import { LogOut, User, Settings } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PAGE_TITLES } from "@/utils/page-titles";
 
-const isLoggedIn = true; // replace later with real auth state
+const token = localStorage.getItem("token");
+const isLoggedIn = !!token;
 
 const Header = () => {
+  const navigate = useNavigate();
+
   const location = useLocation();
   const currentTitle = PAGE_TITLES[location.pathname] || "Finance Dashboard";
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
 
   return (
     <header className="h-16 border-b bg-background px-6 flex items-center justify-between shadow-sm">
@@ -32,8 +40,10 @@ const Header = () => {
       <div className="flex items-center gap-4">
         {!isLoggedIn ? (
           <>
-            <Button variant="ghost">Login</Button>
-            <Button>Sign Up</Button>
+            <Button onClick={() => navigate("/login")} variant="ghost">
+              Login
+            </Button>
+            <Button onClick={() => navigate("/register")}>Sign Up</Button>
           </>
         ) : (
           <DropdownMenu>
@@ -59,7 +69,7 @@ const Header = () => {
 
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem className="text-red-600">
+              <DropdownMenuItem className="text-red-600" onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout
               </DropdownMenuItem>

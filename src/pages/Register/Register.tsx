@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "@base-ui/react";
 import { Button } from "@base-ui/react";
 import { Link } from "react-router-dom";
+import { ROUTES } from "@/navigators/routes";
+import { useAuth } from "@/context/AuthContext";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -12,19 +14,25 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const { setUser } = useAuth();
+
   const handleRegister = async (e: any) => {
     e.preventDefault();
 
     try {
-      await registerUser({
+      const res = await registerUser({
         name,
         email,
         password,
       });
 
-      navigate("/login");
-    } catch (error) {
-      console.error(error);
+      localStorage.setItem("token", res.token);
+
+      setUser(res);
+
+      navigate(ROUTES.DASHBOARD);
+    } catch (error: any) {
+      console.error(error.response?.data);
     }
   };
 
@@ -34,19 +42,22 @@ const Register = () => {
         <Input
           type="text"
           placeholder="Name"
-          onChange={(e) => setName(e.target.value)}
+          value={name}
+          onChange={(e) => setName((e.target as HTMLInputElement).value)}
         />
 
         <Input
           type="text"
           placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail((e.target as HTMLInputElement).value)}
         />
 
         <Input
           type="password"
           placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
+          value={password}
+          onChange={(e) => setPassword((e.target as HTMLInputElement).value)}
         />
 
         <Button type="submit">Register</Button>
