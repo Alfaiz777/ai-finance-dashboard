@@ -8,21 +8,41 @@ const assetSchema = new mongoose.Schema(
       required: true,
     },
 
-    name: String,
-
-    institution: String,
-
-    amount: Number,
-
     type: {
       type: String,
       enum: ["bank", "fd", "stock", "mutual_fund"],
       required: true,
     },
 
-    metadata: {
-      type: Object,
-    },
+    name: { type: String, required: true },
+    amount: { type: Number, required: true },
+    institution: { type: String },
+
+    // BANK
+    accountType: { type: String, enum: ["savings", "current"] },
+    accountNumberLast4: { type: String },
+
+    // FD
+    principal: { type: Number },
+    interestRate: { type: Number },
+    startDate: { type: String },
+    maturityDate: { type: String },
+    maturityAmount: { type: Number },
+
+    // STOCK
+    ticker: { type: String },
+    quantity: { type: Number },
+    buyPrice: { type: Number },
+    currentPrice: { type: Number },
+    profitLoss: { type: Number },
+
+    // MUTUAL FUND
+    units: { type: Number },
+    nav: { type: Number },
+    investedAmount: { type: Number },
+    currentValue: { type: Number },
+
+    lastUpdated: { type: String },
   },
   { timestamps: true },
 );

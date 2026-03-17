@@ -22,7 +22,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/assets", assetRoutes);
-app.use("/api/splitWise", splitWiseRoutes);
+app.use("/api/splitwise", splitWiseRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/gmail", gmailRoutes);
 

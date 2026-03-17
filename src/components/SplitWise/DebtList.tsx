@@ -1,5 +1,5 @@
-import { dummySplitWiseDebts } from "@/data/dummy";
 import { Card, CardContent } from "@/components/ui/card";
+import type { SplitWiseDebt } from "@/types";
 
 const DebtList = ({
   title,
@@ -7,7 +7,7 @@ const DebtList = ({
   type,
 }: {
   title: string;
-  data: typeof dummySplitWiseDebts;
+  data: SplitWiseDebt[];
   type: "you_owe" | "they_owe";
 }) => {
   return (

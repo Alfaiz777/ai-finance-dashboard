@@ -26,8 +26,6 @@ const Register = () => {
         password,
       });
 
-      localStorage.setItem("token", res.token);
-
       setUser(res);
 
       navigate(ROUTES.DASHBOARD);
