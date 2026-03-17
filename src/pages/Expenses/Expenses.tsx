@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -8,19 +8,37 @@ import {
 } from "@/components/ui/select";
 import SearchBox from "@/components/SearchBox";
 import TransactionTable from "@/components/TransactionTable";
-import { dummyExpenses } from "@/data/dummy";
+import { getExpenses } from "@/services/expenseService";
 import type { Expense } from "@/types";
 
 const PAGE_SIZE = 8;
 
 const Expenses = () => {
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortOption, setSortOption] = useState("date-desc");
   const [currentPage, setCurrentPage] = useState(1);
 
+  useEffect(() => {
+    const fetchExpenses = async () => {
+      try {
+        const data = await getExpenses();
+        setExpenses(data);
+      } catch (error) {
+        console.error("Failed to fetch expenses", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExpenses();
+  }, []);
+
   const filteredData = useMemo(() => {
-    let data: Expense[] = [...dummyExpenses];
+    let data: Expense[] = [...expenses];
 
     // 1️⃣ Filter by category
     if (selectedCategory !== "All") {
@@ -51,7 +69,7 @@ const Expenses = () => {
     });
 
     return data;
-  }, [searchTerm, selectedCategory, sortOption]);
+  }, [expenses, searchTerm, selectedCategory, sortOption]);
 
   const totalItems = filteredData.length;
 
@@ -110,13 +128,19 @@ const Expenses = () => {
         </Select>
       </div>
 
-      <TransactionTable
-        data={paginatedData}
-        currentPage={currentPage}
-        pageSize={PAGE_SIZE}
-        totalItems={totalItems}
-        onPageChange={setCurrentPage}
-      />
+      {loading ? (
+        <div className="flex justify-center items-center h-40 text-muted-foreground">
+          Loading transactions...
+        </div>
+      ) : (
+        <TransactionTable
+          data={paginatedData}
+          currentPage={currentPage}
+          pageSize={PAGE_SIZE}
+          totalItems={totalItems}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </>
   );
 };

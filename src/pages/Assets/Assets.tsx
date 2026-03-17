@@ -1,22 +1,62 @@
-import {
-  dummyBankAccounts,
-  dummyFDs,
-  dummyStocks,
-  dummyMutualFunds,
-} from "@/data/dummy";
-
+import { useState, useEffect } from "react";
+import { getAssets } from "@/services/assetService";
+import type {
+  Asset,
+  BankAccount,
+  FixedDeposit,
+  StockHolding,
+  MutualFund,
+} from "@/types";
 import { calculateTotalAssets } from "@/utils/financial-calculations";
 import AssetSection from "@/components/Assets/AssetSection";
 import AssetCard from "@/components/Assets/AssetCard";
 import { Landmark, BadgeIndianRupee, TrendingUp, PieChart } from "lucide-react";
 
 const Assets = () => {
+  //API state
+  const [assets, setAssets] = useState<Asset[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  //fetch on mount
+  useEffect(() => {
+    const fetchAssets = async () => {
+      try {
+        const data = await getAssets();
+        setAssets(data);
+      } catch (error) {
+        console.error("Failed to fetch Assets", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAssets();
+  }, []);
+
+  // Derived groups
+  const bankAccounts = assets.filter((a) => a.type === "bank") as BankAccount[];
+  const fixedDeposits = assets.filter((a) => a.type === "fd") as FixedDeposit[];
+  const stocks = assets.filter((a) => a.type === "stock") as StockHolding[];
+  const mutualFunds = assets.filter(
+    (a) => a.type === "mutual_fund",
+  ) as MutualFund[];
+
+  //calculated values
   const totalAssets = calculateTotalAssets(
-    dummyBankAccounts,
-    dummyFDs,
-    dummyStocks,
-    dummyMutualFunds,
+    bankAccounts,
+    fixedDeposits,
+    stocks,
+    mutualFunds,
   );
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-40 text-muted-foreground">
+        Loading assets...
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {/* Total Assets */}
@@ -29,7 +69,7 @@ const Assets = () => {
 
       {/* Bank Accounts */}
       <AssetSection title="Bank Accounts">
-        {dummyBankAccounts.map((account) => (
+        {bankAccounts.map((account) => (
           <AssetCard
             key={account.id}
             title={account.name}
@@ -42,7 +82,7 @@ const Assets = () => {
 
       {/* Fixed Deposits */}
       <AssetSection title="Fixed Deposits">
-        {dummyFDs.map((fd) => (
+        {fixedDeposits.map((fd) => (
           <AssetCard
             key={fd.id}
             title={fd.name}
@@ -61,7 +101,7 @@ const Assets = () => {
 
       {/* Stocks */}
       <AssetSection title="Stocks">
-        {dummyStocks.map((stock) => (
+        {stocks.map((stock) => (
           <AssetCard
             key={stock.id}
             title={`${stock.name} (${stock.ticker})`}
@@ -81,7 +121,7 @@ const Assets = () => {
 
       {/* Mutual Funds */}
       <AssetSection title="Mutual Funds">
-        {dummyMutualFunds.map((mf) => (
+        {mutualFunds.map((mf) => (
           <AssetCard
             key={mf.id}
             title={mf.name}

@@ -1,3 +1,18 @@
+import { useState, useEffect, useMemo } from "react";
+import { getExpenses } from "@/services/expenseService";
+import { getDebts } from "@/services/splitwiseService";
+import { getAssets } from "@/services/assetService";
+import { getUserProfile } from "@/services/userService";
+import type {
+  Expense,
+  Asset,
+  SplitWiseDebt,
+  User,
+  BankAccount,
+  FixedDeposit,
+  StockHolding,
+  MutualFund,
+} from "@/types";
 import {
   calculateMonthlyExpenses,
   calculateTotalAssets,
@@ -6,15 +21,15 @@ import {
   calculateMonthlySavings,
 } from "@/utils/financial-calculations";
 
-import {
-  dummyExpenses,
-  dummyBankAccounts,
-  dummyFDs,
-  dummyMutualFunds,
-  dummySplitWiseDebts,
-  dummyStocks,
-  dummyUser,
-} from "@/data/dummy";
+// import {
+//   dummyExpenses,
+//   dummyBankAccounts,
+//   dummyFDs,
+//   dummyMutualFunds,
+//   dummySplitWiseDebts,
+//   dummyStocks,
+//   dummyUser,
+// } from "@/data/dummy";
 import DashboardCard from "@/components/Dashboard/DashboardCard";
 import { Wallet, TrendingUp, TrendingDown, CreditCard } from "lucide-react";
 import DashboardPieChart from "@/components/Dashboard/DashboardPieChart";
@@ -26,35 +41,85 @@ import {
 } from "@/utils/financial-calculations";
 
 const Dashboard = () => {
-  const monthlyExpenses = calculateMonthlyExpenses(dummyExpenses);
+  // ── API State ──────────────────────────────────────────────
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [assets, setAssets] = useState<Asset[]>([]);
+  const [debts, setDebts] = useState<SplitWiseDebt[]>([]);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const [expensesData, assetsData, debtsData, userData] =
+          await Promise.all([
+            getExpenses(),
+            getAssets(),
+            getDebts(),
+            getUserProfile(),
+          ]);
+        setExpenses(expensesData);
+        setAssets(assetsData);
+        setDebts(debtsData);
+        setUser(userData);
+      } catch (error) {
+        console.error("failed to fetch Dashboard data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  // ── Derived Asset Groups ───────────────────────────────────
+  const bankAccounts = assets.filter((a) => a.type === "bank") as BankAccount[];
+  const fixedDeposits = assets.filter((a) => a.type === "fd") as FixedDeposit[];
+  const stocks = assets.filter((a) => a.type === "stock") as StockHolding[];
+  const mutualFunds = assets.filter(
+    (a) => a.type === "mutual_fund",
+  ) as MutualFund[];
+
+  const monthlyExpenses = calculateMonthlyExpenses(expenses);
   const totalAssets = calculateTotalAssets(
-    dummyBankAccounts,
-    dummyFDs,
-    dummyStocks,
-    dummyMutualFunds,
+    bankAccounts,
+    fixedDeposits,
+    stocks,
+    mutualFunds,
   );
-  const totalDebt = calculateTotalDebt(dummySplitWiseDebts);
+  const totalDebt = calculateTotalDebt(debts);
   const netWorth = calculateNetWorth(totalAssets, totalDebt);
   const monthlySavings = calculateMonthlySavings(
-    dummyUser.monthlyIncome,
+    user?.monthlyIncome ?? 0,
     monthlyExpenses,
   );
 
-  const rawData = getExpenseBreakdownByCategory(dummyExpenses);
+  const pieData = useMemo(() => {
+    const rawData = getExpenseBreakdownByCategory(expenses);
+    return rawData.map((item, index) => ({
+      category: item.name,
+      value: item.value,
+      fill: ["#6366f1", "#22c55e", "#f59e0b", "#ef4444", "#3b82f6"][index % 5],
+    }));
+  }, [expenses]);
 
-  const pieData = rawData.map((item, index) => ({
-    category: item.name,
-    value: item.value,
-    fill: ["#6366f1", "#22c55e", "#f59e0b", "#ef4444", "#3b82f6"][index % 5],
-  }));
+  const barData = useMemo(() => {
+    const rawBarData = getMonthlySpendingTrend(expenses);
+    return rawBarData.map((item, index) => ({
+      month: item.month,
+      value: item.value,
+      fill: ["#6366f1", "#22c55e", "#f59e0b", "#ef4444", "#3b82f6"][index % 5],
+    }));
+  }, [expenses]);
 
-  const rawBarData = getMonthlySpendingTrend(dummyExpenses);
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-40 text-muted-foreground">
+        Loading dashboard...
+      </div>
+    );
+  }
 
-  const barData = rawBarData.map((item, index) => ({
-    month: item.month,
-    value: item.value,
-    fill: ["#6366f1", "#22c55e", "#f59e0b", "#ef4444", "#3b82f6"][index % 5],
-  }));
   return (
     <>
       <div className="space-y-6">
@@ -100,7 +165,7 @@ const Dashboard = () => {
           />
         </div>
         <div>
-          <RecentTransactions />
+          <RecentTransactions expenses={expenses} />
         </div>
       </div>
     </>

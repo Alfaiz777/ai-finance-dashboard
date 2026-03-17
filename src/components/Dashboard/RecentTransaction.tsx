@@ -1,10 +1,10 @@
 import { useState, useMemo } from "react";
 import TableWithPagination from "@/components/TableWithPagination";
 import type { ColumnDef } from "@tanstack/react-table";
-import { dummyExpenses } from "@/data/dummy";
+import type { Expense } from "@/types";
 import { formatDate } from "@/utils/helper";
 const PAGE_SIZE = 5;
-const columns: ColumnDef<(typeof dummyExpenses)[0]>[] = [
+const columns: ColumnDef<Expense>[] = [
   {
     accessorKey: "date",
     header: "Date",
@@ -33,14 +33,18 @@ const columns: ColumnDef<(typeof dummyExpenses)[0]>[] = [
   },
 ];
 
-const RecentTransactions = () => {
+interface RecentTransactionsProps {
+  expenses: Expense[];
+}
+
+const RecentTransactions = ({ expenses }: RecentTransactionsProps) => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const totalItems = dummyExpenses.length;
+  const totalItems = expenses.length;
 
   const sortedExpenses = useMemo(
-    () => [...dummyExpenses].sort((a, b) => b.date.localeCompare(a.date)),
-    [],
+    () => [...expenses].sort((a, b) => b.date.localeCompare(a.date)),
+    [expenses],
   );
 
   const paginatedData = useMemo(() => {

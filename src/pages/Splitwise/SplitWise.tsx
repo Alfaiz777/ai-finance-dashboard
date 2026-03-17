@@ -1,16 +1,35 @@
-import { useMemo } from "react";
-import { dummySplitWiseDebts } from "@/data/dummy";
+import { useMemo, useState, useEffect } from "react";
+// import { dummySplitWiseDebts } from "@/data/dummy";
+import type { SplitWiseDebt } from "@/types";
+import { getDebts } from "@/services/splitwiseService";
 import NetBalanceCard from "@/components/SplitWise/NetBalanceCard";
 import DebtList from "@/components/SplitWise/DebtList";
 
 const SplitWise = () => {
-  const youOweList = useMemo(() => {
-    return dummySplitWiseDebts.filter((debt) => debt.direction === "you_owe");
+  const [debts, setDebts] = useState<SplitWiseDebt[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDebts = async () => {
+      try {
+        const data = await getDebts();
+        setDebts(data);
+      } catch (error) {
+        console.error("Failed to fetch debts");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDebts();
   }, []);
 
+  const youOweList = useMemo(() => {
+    return debts.filter((debt) => debt.direction === "you_owe");
+  }, [debts]);
+
   const theyOweList = useMemo(() => {
-    return dummySplitWiseDebts.filter((debt) => debt.direction === "they_owe");
-  }, []);
+    return debts.filter((debt) => debt.direction === "they_owe");
+  }, [debts]);
 
   //calculate Totals
   const totalYouOwe = useMemo(() => {
@@ -20,6 +39,14 @@ const SplitWise = () => {
   const totalOwedToYou = useMemo(() => {
     return theyOweList.reduce((sum, debt) => sum + debt.amount, 0);
   }, [theyOweList]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-40 text-muted-foreground">
+        Loading split expenses...
+      </div>
+    );
+  }
 
   return (
     <>
