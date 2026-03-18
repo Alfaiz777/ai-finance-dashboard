@@ -10,6 +10,7 @@ export interface Expense {
   source: "gmail" | "manual"; // how was this expense captured
   paymentMethod: "upi" | "credit_card" | "debit_card" | "cash" | "net_banking";
   description?: string; // optional extra note
+  onDelete?: (id: string) => void;
 }
 
 // Using a union type here instead of plain string

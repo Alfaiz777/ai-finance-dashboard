@@ -8,8 +8,9 @@ import {
 } from "@/components/ui/select";
 import SearchBox from "@/components/SearchBox";
 import TransactionTable from "@/components/TransactionTable";
-import { getExpenses } from "@/services/expenseService";
+import { getExpenses, deleteExpense } from "@/services/expenseService";
 import type { Expense } from "@/types";
+import AddExpenseModal from "@/components/Expenses";
 
 const PAGE_SIZE = 8;
 
@@ -37,8 +38,28 @@ const Expenses = () => {
     fetchExpenses();
   }, []);
 
+  const handleExpenseAdded = (newExpense: Expense) => {
+    setExpenses((prev) => [newExpense, ...prev]);
+  };
+
+  const handleExpenseDeleted = async (id: string) => {
+    try {
+      await deleteExpense(id);
+      setExpenses((prev) => prev.filter((e) => e.id !== id));
+    } catch (error) {
+      console.error("Failed to delete expense:", error);
+    }
+  };
+
+  const expensesWithDelete = useMemo(() => {
+    return expenses.map((e) => ({
+      ...e,
+      onDelete: handleExpenseDeleted, // ← attach the function
+    }));
+  }, [expenses]);
+
   const filteredData = useMemo(() => {
-    let data: Expense[] = [...expenses];
+    let data: Expense[] = [...expensesWithDelete];
 
     // 1️⃣ Filter by category
     if (selectedCategory !== "All") {
@@ -69,7 +90,7 @@ const Expenses = () => {
     });
 
     return data;
-  }, [expenses, searchTerm, selectedCategory, sortOption]);
+  }, [expensesWithDelete, searchTerm, selectedCategory, sortOption]);
 
   const totalItems = filteredData.length;
 
@@ -80,52 +101,55 @@ const Expenses = () => {
 
   return (
     <>
-      <div className="flex flex-wrap gap-4 mb-6 items-center">
-        <SearchBox
-          placeholder="Search merchant..."
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="w-64"
-        />
+      <div className="flex flex-wrap gap-4 mb-6 items-center justify-between">
+        <div className="flex flex-wrap gap-4 items-center">
+          <SearchBox
+            placeholder="Search merchant..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-64"
+          />
 
-        {/* Category Filter */}
-        <Select
-          value={selectedCategory}
-          onValueChange={(value) => {
-            setSelectedCategory(value);
-            setCurrentPage(1);
-          }}
-        >
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="Filter by category" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="All">All</SelectItem>
-            <SelectItem value="Food">Food</SelectItem>
-            <SelectItem value="Transport">Transport</SelectItem>
-            <SelectItem value="Shopping">Shopping</SelectItem>
-            <SelectItem value="Entertainment">Entertainment</SelectItem>
-          </SelectContent>
-        </Select>
+          {/* Category Filter */}
+          <Select
+            value={selectedCategory}
+            onValueChange={(value) => {
+              setSelectedCategory(value);
+              setCurrentPage(1);
+            }}
+          >
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Filter by category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All">All</SelectItem>
+              <SelectItem value="Food">Food</SelectItem>
+              <SelectItem value="Transport">Transport</SelectItem>
+              <SelectItem value="Shopping">Shopping</SelectItem>
+              <SelectItem value="Entertainment">Entertainment</SelectItem>
+            </SelectContent>
+          </Select>
 
-        {/* Sort Filter */}
-        <Select
-          value={sortOption}
-          onValueChange={(value) => setSortOption(value)}
-        >
-          <SelectTrigger className="w-52">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="date-desc">Newest</SelectItem>
-            <SelectItem value="date-asc">Oldest</SelectItem>
-            <SelectItem value="amount-desc">Highest Amount</SelectItem>
-            <SelectItem value="amount-asc">Lowest Amount</SelectItem>
-          </SelectContent>
-        </Select>
+          {/* Sort Filter */}
+          <Select
+            value={sortOption}
+            onValueChange={(value) => setSortOption(value)}
+          >
+            <SelectTrigger className="w-52">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="date-desc">Newest</SelectItem>
+              <SelectItem value="date-asc">Oldest</SelectItem>
+              <SelectItem value="amount-desc">Highest Amount</SelectItem>
+              <SelectItem value="amount-asc">Lowest Amount</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <AddExpenseModal onExpenseAdded={handleExpenseAdded} />
       </div>
 
       {loading ? (

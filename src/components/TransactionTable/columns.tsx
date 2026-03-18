@@ -2,6 +2,8 @@ import type { ColumnDef } from "@tanstack/react-table";
 import type { Expense } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/utils/helper";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 export const transactionColumns: ColumnDef<Expense>[] = [
   {
@@ -40,6 +42,20 @@ export const transactionColumns: ColumnDef<Expense>[] = [
       <Badge variant={row.original.source === "gmail" ? "default" : "outline"}>
         {row.original.source}
       </Badge>
+    ),
+  },
+  {
+    id: "actions",
+    header: "",
+    cell: ({ row }) => (
+      <Button
+        variant="ghost"
+        size="icon"
+        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+        onClick={() => row.original.onDelete?.(row.original.id)}
+      >
+        <Trash2 className="h-4 w-4" />
+      </Button>
     ),
   },
 ];
