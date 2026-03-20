@@ -1,29 +1,24 @@
-import { Request, Response } from "express";
+import { Response } from "express";
+import { getAIResponse } from "../services/aiService";
 
 export const chatWithAI = async (req: any, res: Response) => {
   const { message } = req.body;
 
-  if (!message) {
-    return res.status(400).json({ message: "Message required" });
+  // Validate input
+  if (!message || message.trim() === "") {
+    return res.status(400).json({ message: "Message is required" });
   }
 
-  const text = message.toLowerCase();
+  try {
+    // Pass the real userId from JWT token + user's message
+    // getAIResponse fetches their data and calls OpenAI
+    const reply = await getAIResponse(req.user.id, message);
 
-  let reply = "I am still learning about your finances.";
-
-  if (text.includes("food")) {
-    reply = "You spent around ₹4500 on food this month.";
+    res.json({ reply });
+  } catch (error) {
+    console.error("AI error:", error);
+    res.status(500).json({
+      message: "AI service failed. Please try again.",
+    });
   }
-
-  if (text.includes("highest")) {
-    reply = "Your highest expense was ₹12000 on travel.";
-  }
-
-  if (text.includes("savings")) {
-    reply = "You saved approximately ₹18000 this month.";
-  }
-
-  res.json({
-    reply,
-  });
 };

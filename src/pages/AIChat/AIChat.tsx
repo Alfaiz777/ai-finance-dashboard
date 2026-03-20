@@ -2,6 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { askAI } from "@/services/aiService";
 
 type Message = {
   id: string;
@@ -9,66 +10,74 @@ type Message = {
   content: string;
 };
 
+// Starter message shown when chat is empty
+const WELCOME_MESSAGE: Message = {
+  id: "welcome",
+  role: "assistant",
+  content:
+    "Hi! I'm your AI financial advisor. I can see your expenses, assets, and debts. Ask me anything about your finances — like 'How much did I spend on food?' or 'What's my net worth?'",
+};
+
 const AIChat = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  // Start with welcome message already shown
+  const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  const [isTyping, setIsTyping] = useState(false);
+  // Auto-scroll to bottom when new message arrives
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isTyping]);
 
-  const getFakeAIResponse = (question: string) => {
-    const text = question.toLowerCase();
+  const handleSend = async () => {
+    // Don't send empty messages or while AI is responding
+    if (!input.trim() || isTyping) return;
 
-    if (text.includes("food")) {
-      return "You spent around ₹4,500 on food this month.";
-    }
-
-    if (text.includes("highest")) {
-      return "Your highest expense was ₹12,000 on travel.";
-    }
-
-    if (text.includes("savings")) {
-      return "You saved approximately ₹18,000 this month.";
-    }
-
-    return "I’m still learning! Try asking about food spending, savings, or expenses.";
-  };
-
-  const handleSend = () => {
-    if (!input.trim()) return;
-
+    // ── Step 1: Add user's message to chat immediately ────────
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
-      content: input,
+      content: input.trim(),
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    const userInput = input.trim(); //save before clearing
+    setInput(""); // clear input field
+    setIsTyping(true); // show 'AI is typing....'
 
-    setInput("");
+    // ── Step 2: Call real backend API ─────────────────────────
+    try {
+      const data = await askAI(userInput);
 
-    setIsTyping(true);
-
-    setTimeout(() => {
+      //data.reply is the string from OpenAI
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: getFakeAIResponse(userMessage.content),
+        content: data.reply,
       };
 
       setMessages((prev) => [...prev, aiResponse]);
+    } catch (error) {
+      // If API fails, show error message in chat
+      // Don't show a JavaScript alert — keep it in the chat UI
+      const errorResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content:
+          "Sorry, I couldn't connect to the AI service. Please check your connection and try again.",
+      };
+      setMessages((prev) => [...prev, errorResponse]);
+    } finally {
       setIsTyping(false);
-    }, 2000);
+    }
   };
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
 
   return (
     <>
       <div className="flex flex-col h-[80vh]">
+        {/* Message list */}
         <div className="flex-1 overflow-y-auto space-y-4 p-4">
           {messages.map((msg) => (
             <div
@@ -78,33 +87,70 @@ const AIChat = () => {
               }`}
             >
               {msg.role === "assistant" && (
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback>AI</AvatarFallback>
+                <Avatar className="h-8 w-8 shrink-0">
+                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                    AI
+                  </AvatarFallback>
                 </Avatar>
               )}
 
               <div
                 className={`max-w-xs rounded-xl px-4 py-2 text-sm ${
-                  msg.role === "user" ? "bg-primary text-white" : "bg-muted"
+                  msg.role === "user"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-foreground"
                 }`}
               >
-                {msg.content}
+                {/* Preserve line breaks in AI responses */}
+                {msg.content.split("\n").map((line, i) => (
+                  <span key={i}>
+                    {line}
+                    {i < msg.content.split("\n").length - 1 && <br />}
+                  </span>
+                ))}
               </div>
 
               {msg.role === "user" && (
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback>U</AvatarFallback>
+                <Avatar className="h-8 w-8 shrink-0">
+                  <AvatarFallback className="text-xs">U</AvatarFallback>
                 </Avatar>
               )}
             </div>
           ))}
+
+          {/* Typing indicator */}
           {isTyping && (
-            <div className="flex justify-start">
-              <div className="bg-muted rounded-xl px-4 py-2 text-sm">
-                AI is typing...
+            <div className="flex items-start gap-2 justify-start">
+              <Avatar className="h-8 w-8 shrink-0">
+                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                  AI
+                </AvatarFallback>
+              </Avatar>
+              <div className="bg-muted rounded-xl px-4 py-3 text-sm text-muted-foreground">
+                <span className="flex gap-1 items-center">
+                  <span
+                    className="animate-bounce"
+                    style={{ animationDelay: "0ms" }}
+                  >
+                    ●
+                  </span>
+                  <span
+                    className="animate-bounce"
+                    style={{ animationDelay: "150ms" }}
+                  >
+                    ●
+                  </span>
+                  <span
+                    className="animate-bounce"
+                    style={{ animationDelay: "300ms" }}
+                  >
+                    ●
+                  </span>
+                </span>
               </div>
             </div>
           )}
+
           <div ref={bottomRef} />
         </div>
 
@@ -114,13 +160,21 @@ const AIChat = () => {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about your finances..."
             className="flex-1"
+            disabled={isTyping} // disable while AI is responding
             onKeyDown={(e) => {
-              if (e.key === "Enter") handleSend();
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+              }
             }}
           />
 
-          <Button onClick={handleSend} className="cursor-pointer">
-            Send
+          <Button
+            onClick={handleSend}
+            className="cursor-pointer"
+            disabled={isTyping || !input.trim()}
+          >
+            {isTyping ? "..." : "Send"}
           </Button>
         </div>
       </div>
