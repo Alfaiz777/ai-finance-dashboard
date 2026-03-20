@@ -1,4 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 interface AssetCardProps {
   title: string;
@@ -6,6 +8,7 @@ interface AssetCardProps {
   amount: number;
   extraInfo?: React.ReactNode;
   icon?: React.ReactNode;
+  onDelete?: () => void;
 }
 
 const AssetCard = ({
@@ -14,6 +17,7 @@ const AssetCard = ({
   amount,
   extraInfo,
   icon,
+  onDelete,
 }: AssetCardProps) => {
   return (
     <Card className="rounded-xl shadow-sm">
@@ -30,8 +34,21 @@ const AssetCard = ({
             </div>
           </div>
 
-          <div className="text-lg font-semibold">
-            ₹ {amount.toLocaleString()}
+          <div className="flex items-center gap-2">
+            <div className="text-lg font-semibold">
+              ₹ {amount.toLocaleString()}
+            </div>
+            {/* Only show delete button if onDelete is passed */}
+            {onDelete && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-red-500 hover:text-red-700 hover:bg-red-50 h-8 w-8"
+                onClick={onDelete}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
 

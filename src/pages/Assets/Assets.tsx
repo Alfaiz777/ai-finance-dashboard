@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAssets } from "@/services/assetService";
+import { getAssets, deleteAsset } from "@/services/assetService";
 import type {
   Asset,
   BankAccount,
@@ -11,6 +11,7 @@ import { calculateTotalAssets } from "@/utils/financial-calculations";
 import AssetSection from "@/components/Assets/AssetSection";
 import AssetCard from "@/components/Assets/AssetCard";
 import { Landmark, BadgeIndianRupee, TrendingUp, PieChart } from "lucide-react";
+import AddAssetModal from "@/components/Assets/AddAssetModal";
 
 const Assets = () => {
   //API state
@@ -32,6 +33,21 @@ const Assets = () => {
 
     fetchAssets();
   }, []);
+
+  // ── Called by modal when asset is created ─────────────────
+  const handleAssetAdded = (newAsset: Asset) => {
+    setAssets((prev) => [...prev, newAsset]);
+  };
+
+  // ── Called by delete button on each AssetCard ─────────────
+  const handleAssetDeleted = async (id: string) => {
+    try {
+      await deleteAsset(id);
+      setAssets((prev) => prev.filter((a) => a.id !== id));
+    } catch (error) {
+      console.error("Failed to delete asset:", error);
+    }
+  };
 
   // Derived groups
   const bankAccounts = assets.filter((a) => a.type === "bank") as BankAccount[];
@@ -60,11 +76,14 @@ const Assets = () => {
   return (
     <div className="space-y-8">
       {/* Total Assets */}
-      <div className="rounded-xl border bg-card p-6 shadow-sm">
-        <p className="text-sm text-muted-foreground">Total Assets</p>
-        <h1 className="text-3xl font-bold mt-2">
-          ₹ {totalAssets.toLocaleString()}
-        </h1>
+      <div className="flex items-center justify-between">
+        <div className="rounded-xl border bg-card p-6 shadow-sm flex-1 mr-4">
+          <p className="text-sm text-muted-foreground">Total Assets</p>
+          <h1 className="text-3xl font-bold mt-2">
+            ₹ {totalAssets.toLocaleString()}
+          </h1>
+        </div>
+        <AddAssetModal onAssetAdded={handleAssetAdded} />
       </div>
 
       {/* Bank Accounts */}
@@ -76,6 +95,7 @@ const Assets = () => {
             subtitle={`${account.institution} • ****${account.accountNumberLast4}`}
             amount={account.amount}
             icon={<Landmark className="h-5 w-5 text-primary" />}
+            onDelete={() => handleAssetDeleted(account.id)}
           />
         ))}
       </AssetSection>
@@ -95,6 +115,7 @@ const Assets = () => {
               </>
             }
             icon={<BadgeIndianRupee className="h-5 w-5 text-amber-500" />}
+            onDelete={() => handleAssetDeleted(fd.id)}
           />
         ))}
       </AssetSection>
@@ -115,6 +136,7 @@ const Assets = () => {
               </>
             }
             icon={<TrendingUp className="h-5 w-5 text-green-600" />}
+            onDelete={() => handleAssetDeleted(stock.id)}
           />
         ))}
       </AssetSection>
@@ -134,6 +156,7 @@ const Assets = () => {
               </>
             }
             icon={<PieChart className="h-5 w-5 text-blue-600" />}
+            onDelete={() => handleAssetDeleted(mf.id)}
           />
         ))}
       </AssetSection>
