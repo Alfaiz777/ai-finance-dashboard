@@ -38,8 +38,8 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
-    gmailAccessToken: String,
-    gmailRefreshToken: String,
+    gmailAccessToken: { type: String, default: null },
+    gmailRefreshToken: { type: String, default: null },
   },
   { timestamps: true },
 );

@@ -1,33 +1,122 @@
+import { useState, useEffect } from "react";
 import MonthlyIncomeCard from "@/components/Settings/MonthlyIncomeCard";
 import IntegrationCard from "@/components/Settings/IntegrationCard";
-import { Mail, Link } from "lucide-react";
+import { Mail, Users } from "lucide-react";
+import { getUserProfile } from "@/services/userService";
+import API from "@/services/api";
 
 const Settings = () => {
+  const [gmailConnected, setGmailConnected] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [syncResult, setSyncResult] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Load user profile to check if Gmail is already connected
+    getUserProfile()
+      .then((user) => {
+        setGmailConnected(user.gmailConnected);
+      })
+      .catch((err) => console.error("Failed to load user:", err));
+
+    // Check if we just came back from Google OAuth flow
+    // Google redirects to /settings?gmail=connected after success
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get("gmail") === "connected") {
+      setGmailConnected(true);
+      setSyncResult(
+        "Gmail connected successfully! Click Sync Now to import your expenses.",
+      );
+      // Clean the URL — remove query params without page reload
+      window.history.replaceState({}, "", "/settings");
+    }
+
+    if (params.get("error") === "auth_failed") {
+      setSyncResult("Gmail connection failed. Please try again.");
+      window.history.replaceState({}, "", "/settings");
+    }
+  }, []);
+
+  // Step 1 of Gmail flow — get OAuth URL from backend and redirect user
+  const handleConnectGmail = async () => {
+    try {
+      const res = await API.get("/gmail/auth-url");
+      // Redirect browser to Google's permission screen
+      window.location.href = res.data.url;
+    } catch (error) {
+      console.error("Failed to get Gmail auth URL:", error);
+      setSyncResult("Failed to start Gmail connection. Please try again.");
+    }
+  };
+
+  // Disconnect Gmail — clears tokens from database
+  const handleDisconnectGmail = async () => {
+    try {
+      await API.post("/gmail/disconnect");
+      setGmailConnected(false);
+      setSyncResult(null);
+    } catch (error) {
+      console.error("Failed to disconnect Gmail:", error);
+    }
+  };
+
+  // Sync Gmail — fetches emails and parses transactions
+  const handleSyncGmail = async () => {
+    setSyncing(true);
+    setSyncResult(null);
+
+    try {
+      const res = await API.post("/gmail/sync");
+      const { newExpenses, skipped } = res.data;
+
+      if (newExpenses === 0) {
+        setSyncResult(
+          `Sync complete — No new expenses found. ${skipped} emails skipped.`,
+        );
+      } else {
+        setSyncResult(
+          `Sync complete — ${newExpenses} new expense${newExpenses > 1 ? "s" : ""} added from your bank emails. ${skipped} already existed.`,
+        );
+      }
+    } catch (error) {
+      setSyncResult("Sync failed. Please reconnect Gmail and try again.");
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
-      {/* Financial Preferences */}
+      {/* ── Financial Preferences ─────────────────────────── */}
       <section className="space-y-4">
         <h2 className="text-lg font-semibold">Financial Preferences</h2>
-
         <MonthlyIncomeCard />
       </section>
 
-      {/* Integrations */}
+      {/* ── Integrations ──────────────────────────────────── */}
       <section className="space-y-4">
         <h2 className="text-lg font-semibold">Integrations</h2>
 
+        {/* Gmail Integration */}
         <IntegrationCard
           title="Gmail"
-          description="Automatically track expenses from payment emails."
+          description="Automatically parse bank transaction emails to track expenses."
           icon={<Mail className="h-5 w-5" />}
-          connected={true}
+          connected={gmailConnected}
+          onConnect={handleConnectGmail}
+          onDisconnect={handleDisconnectGmail}
+          onSync={handleSyncGmail}
+          syncing={syncing}
+          syncResult={syncResult}
         />
 
+        {/* Splitwise — manual entry only */}
         <IntegrationCard
-          title="SplitWise"
-          description="Import shared expenses and debts."
-          icon={<Link className="h-5 w-5" />}
+          title="Splitwise"
+          description="Track shared expenses manually using the Split & Owe page."
+          icon={<Users className="h-5 w-5" />}
           connected={false}
+          comingSoon
         />
       </section>
     </div>
