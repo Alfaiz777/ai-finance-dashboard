@@ -1,5 +1,4 @@
 import { useMemo, useState, useEffect } from "react";
-// import { dummySplitWiseDebts } from "@/data/dummy";
 import type { SplitWiseDebt } from "@/types";
 import { getDebts, deleteDebt } from "@/services/splitwiseService";
 import NetBalanceCard from "@/components/SplitWise/NetBalanceCard";

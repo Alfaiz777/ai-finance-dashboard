@@ -10,6 +10,7 @@ import assetRoutes from "./routes/assetRoutes";
 import splitWiseRoutes from "./routes/splitwiseRoutes";
 import aiRoutes from "./routes/aiRoutes";
 import gmailRoutes from "./routes/gmailRoutes";
+import chatRoutes from "./routes/chatRoutes";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use("/api/assets", assetRoutes);
 app.use("/api/splitwise", splitWiseRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/gmail", gmailRoutes);
+app.use("/api", chatRoutes);
 
 const PORT = process.env.PORT || 5000;
 

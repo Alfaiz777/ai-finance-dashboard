@@ -2,6 +2,9 @@ import OpenAI from "openai";
 import Expense from "../models/Expense";
 import Asset from "../models/Asset";
 import SplitWiseDebt from "../models/SplitWiseDebt";
+import AIChats from "../models/AIChats";
+import User from "../models/User";
+import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 
 export const getAIResponse = async (
   userId: string,
@@ -22,12 +25,23 @@ export const getAIResponse = async (
       apiKey,
       baseURL: "https://openrouter.ai/api/v1",
     });
+
+    // ── ✅ STEP 0: SAVE USER MESSAGE ─────────────────
+    await AIChats.create({
+      userId,
+      role: "user",
+      content: message,
+    });
+
     // ── Step 1: Fetch user's real data ────────────
-    const [expenses, assets, debts] = await Promise.all([
+    const [expenses, assets, debts, user] = await Promise.all([
       Expense.find({ userId }).sort({ date: -1 }).limit(50),
       Asset.find({ userId }),
       SplitWiseDebt.find({ userId }),
+      User.findById(userId),
     ]);
+
+    const monthlyIncome = user?.monthlyIncome || 0;
 
     // ── Step 2: Calculate summary ─────────────────
     const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
@@ -81,6 +95,7 @@ export const getAIResponse = async (
 Here is the user's current financial data:
 
 SUMMARY:
+- Monthly income: ₹${monthlyIncome}
 - Total expenses: ₹${totalExpenses}
 - Total assets: ₹${totalAssets}
 - Net worth: ₹${netWorth}
@@ -99,27 +114,50 @@ DEBTS:
 ${debtsText}
 `.trim();
 
-    // ── Step 8: Prompt ───────────────────────────
-    const prompt = `You are a smart personal finance advisor for an Indian user.
-Use ₹ currency. Be concise and helpful.
+    // ── ✅ STEP 8: GET LAST 5 CHAT MESSAGES (MEMORY) ─────
+    const history = await AIChats.find({ userId })
+      .sort({ createdAt: -1 })
+      .limit(5);
 
-${context}
+    const formattedHistory: ChatCompletionMessageParam[] = history
+      .reverse()
+      .map((m) => ({
+        role: m.role === "assistant" ? "assistant" : "user", // ✅ strict type
+        content: m.content || "", // ✅ ensure string
+      }));
 
-User question: ${message}`;
+    const messages: ChatCompletionMessageParam[] = [
+      {
+        role: "system",
+        content: "You are a helpful finance assistant.",
+      },
+      ...formattedHistory,
+      {
+        role: "user",
+        content: `${context}\n\nUser question: ${message}`,
+      },
+    ];
 
+    // ── STEP 9: Call AI ───────────────────────────
     const completion = await client.chat.completions.create({
       model: "openrouter/free",
-      messages: [
-        { role: "system", content: "You are a helpful finance assistant." },
-        { role: "user", content: prompt },
-      ],
+      messages,
     });
 
     const content = completion.choices?.[0]?.message?.content;
 
-    console.log("AI RAW RESPONSE:", completion);
+    if (!content) {
+      return "No response from AI";
+    }
 
-    return content ?? "No response from AI";
+    // ── ✅ STEP 10: SAVE AI RESPONSE ──────────────
+    await AIChats.create({
+      userId,
+      role: "assistant",
+      content,
+    });
+
+    return content;
   } catch (err) {
     console.error("AI ERROR:", err);
     return "AI failed";

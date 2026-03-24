@@ -5,30 +5,28 @@ import Expense from "../models/Expense";
 const TRANSACTION_PATTERNS = [
   {
     bank: "HDFC",
-    amountRegex: /Rs\.?([\d,]+\.?\d*)\s*(?:debited|spent|paid)/i,
-    merchantRegex:
-      /(?:at|towards|to)\s+([A-Za-z0-9\s&'-]+?)(?:\s+on|\s+via|\s+through|\.)/i,
+    amountRegex: /(?:Rs\.?|INR|₹)\s*([\d,]+\.?\d*)/i,
+    merchantRegex: /(?:at|to|from|paid to|via)\s+([A-Za-z0-9\s&'-]+)/i,
   },
   {
     bank: "ICICI",
-    amountRegex: /INR\s*([\d,]+\.?\d*)\s*(?:debited|spent)/i,
-    merchantRegex: /(?:at|to)\s+([A-Za-z0-9\s&'-]+?)(?:\s+on|\.)/i,
+    amountRegex: /(?:Rs\.?|INR|₹)\s*([\d,]+\.?\d*)/i,
+    merchantRegex: /(?:at|to|from|paid to|via)\s+([A-Za-z0-9\s&'-]+)/i,
   },
   {
     bank: "SBI",
-    amountRegex: /debited\s+by\s+Rs\.?\s*([\d,]+\.?\d*)/i,
-    merchantRegex: /(?:at|towards)\s+([A-Za-z0-9\s&'-]+?)(?:\s+on|\.)/i,
+    amountRegex: /(?:Rs\.?|INR|₹)\s*([\d,]+\.?\d*)/i,
+    merchantRegex: /(?:at|to|from|paid to|via)\s+([A-Za-z0-9\s&'-]+)/i,
   },
   {
     bank: "Axis",
-    amountRegex: /INR\s*([\d,]+\.?\d*)\s+has been debited/i,
-    merchantRegex: /(?:at|to)\s+([A-Za-z0-9\s&'-]+?)(?:\s+on|\.)/i,
+    amountRegex: /(?:Rs\.?|INR|₹)\s*([\d,]+\.?\d*)/i,
+    merchantRegex: /(?:at|to|from|paid to|via)\s+([A-Za-z0-9\s&'-]+)/i,
   },
   {
     bank: "UPI",
     amountRegex: /(?:Rs\.?|INR|₹)\s*([\d,]+\.?\d*)/i,
-    merchantRegex:
-      /(?:paid to|sent to|debited for)\s+([A-Za-z0-9\s&'-]+?)(?:\s+via|\s+on|\.)/i,
+    merchantRegex: /(?:at|to|from|paid to|via)\s+([A-Za-z0-9\s&'-]+)/i,
   },
 ];
 
@@ -127,7 +125,7 @@ const parseEmail = (
     const merchantStr = merchantMatch?.[1];
     const merchant = merchantStr
       ? merchantStr.trim().substring(0, 50)
-      : "Bank Transaction";
+      : "Unknown Merchant";
 
     const category = categorizeExpense(merchant);
 
@@ -153,7 +151,11 @@ export const parseGmailEmails = async (
 
   const isoDate = thirtyDaysAgo.toISOString().split("T")[0]!;
   const dateQuery = isoDate.replace(/-/g, "/");
-  const query = `from:(${BANK_SENDERS.join(" OR ")}) after:${dateQuery}`;
+
+  //   const query = `from:(${BANK_SENDERS.join(" OR ")}) after:${dateQuery}`; // production code
+  //   const query = `subject:(debited OR spent OR paid OR transaction) after:${dateQuery}`; // to test
+
+  const query = `(after:${dateQuery}) (debited OR credited OR spent OR transaction OR UPI OR paid OR INR OR Rs)`;
 
   // Fetch list of matching email IDs
   const listResponse = await gmail.users.messages.list({
@@ -202,6 +204,8 @@ export const parseGmailEmails = async (
       continue;
     }
 
+    console.log("EMAIL TEXT:", emailText);
+
     // ✅ Fixed — explicit string type annotation
     const dateHeader = emailData.payload?.headers?.find(
       (h: any) => h.name?.toLowerCase() === "date",
@@ -213,9 +217,12 @@ export const parseGmailEmails = async (
     const parsed = parseEmail(emailText, emailDate);
 
     if (!parsed) {
+      console.log("❌ Could not parse email");
       skipped++;
       continue;
     }
+
+    console.log("PARSED RESULT:", parsed);
 
     // Save to database
     try {

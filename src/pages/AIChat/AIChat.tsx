@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { askAI } from "@/services/aiService";
+import { getChatHistory } from "@/services/chatService";
 
 type Message = {
   id: string;
@@ -20,11 +21,29 @@ const WELCOME_MESSAGE: Message = {
 
 const AIChat = () => {
   // Start with welcome message already shown
-  const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const loadChats = async () => {
+      try {
+        const data = await getChatHistory();
+
+        if (data.length > 0) {
+          setMessages(data);
+        } else {
+          setMessages([WELCOME_MESSAGE]);
+        }
+      } catch (err) {
+        console.error("Failed to load chat history", err);
+      }
+    };
+
+    loadChats();
+  }, []);
 
   // Auto-scroll to bottom when new message arrives
   useEffect(() => {
