@@ -4,7 +4,7 @@ import API from "./api";
 export const registerUser = async (data: any) => {
   const response = await API.post("/auth/register", data);
 
-  localStorage.setItem("token", response.data.token);
+  // localStorage.setItem("token", response.data.token);
 
   return response.data;
 };
@@ -13,7 +13,7 @@ export const registerUser = async (data: any) => {
 export const loginUser = async (data: any) => {
   const response = await API.post("/auth/login", data);
 
-  localStorage.setItem("token", response.data.token);
+  // localStorage.setItem("token", response.data.token);
 
   return response.data;
 };
@@ -21,4 +21,5 @@ export const loginUser = async (data: any) => {
 //logout
 export const logoutUser = () => {
   localStorage.removeItem("token");
+  localStorage.removeItem("user");
 };

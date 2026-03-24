@@ -15,6 +15,7 @@ import Register from "@/pages/Register";
 import Login from "@/pages/Login";
 import LandingPage from "@/pages/LandingPage";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import Profile from "@/pages/Profile";
 
 const router = createBrowserRouter([
   //Public Routes
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
       {
         path: ROUTES.SETTINGS,
         element: <Settings />,
+      },
+      {
+        path: ROUTES.PROFILE,
+        element: <Profile />,
       },
     ],
   },

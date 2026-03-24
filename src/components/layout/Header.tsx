@@ -13,20 +13,41 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PAGE_TITLES } from "@/utils/page-titles";
+import { useAuth } from "@/context/AuthContext";
+import { ROUTES } from "@/navigators/routes";
 
-const token = localStorage.getItem("token");
-const isLoggedIn = !!token;
+const getInitials = (name: string) => {
+  if (!name) return "";
+
+  const words = name.trim().split(" ");
+
+  if (words.length === 1) {
+    return words[0][0].toUpperCase();
+  }
+
+  return words[0][0].toUpperCase() + words[words.length - 1][0].toUpperCase();
+};
 
 const Header = () => {
   const navigate = useNavigate();
-
   const location = useLocation();
+
+  const { user, logout, loading } = useAuth();
+
   const currentTitle = PAGE_TITLES[location.pathname] || "Finance Dashboard";
 
+  const isLoggedIn = !!user;
+
+  const initials = user?.name ? getInitials(user.name) : "?";
+
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    logout();
     window.location.href = "/login";
   };
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <header className="h-16 border-b bg-background px-6 flex items-center justify-between shadow-sm">
@@ -49,7 +70,7 @@ const Header = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="cursor-pointer hover:scale-105 transition-transform duration-200">
-                <AvatarFallback>AM</AvatarFallback>
+                <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
 
@@ -57,12 +78,12 @@ const Header = () => {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate(ROUTES.PROFILE)}>
                 <User className="mr-2 h-4 w-4" />
                 Profile
               </DropdownMenuItem>
 
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate(ROUTES.SETTINGS)}>
                 <Settings className="mr-2 h-4 w-4" />
                 Settings
               </DropdownMenuItem>

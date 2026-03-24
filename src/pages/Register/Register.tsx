@@ -14,7 +14,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { setUser } = useAuth();
+  const { setAuthUser } = useAuth();
 
   const handleRegister = async (e: any) => {
     e.preventDefault();
@@ -26,7 +26,7 @@ const Register = () => {
         password,
       });
 
-      setUser(res);
+      setAuthUser(res);
       navigate(ROUTES.DASHBOARD);
     } catch (error: any) {
       console.error(error.response?.data);

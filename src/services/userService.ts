@@ -17,3 +17,8 @@ export const updateIncome = async (income: number) => {
 
   return response.data;
 };
+
+export const updateProfile = async (data: { name: string }) => {
+  const res = await API.put("/user/update-profile", data);
+  return res.data;
+};

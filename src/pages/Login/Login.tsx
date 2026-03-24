@@ -13,7 +13,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { setUser } = useAuth();
+  const { setAuthUser } = useAuth();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -21,7 +21,9 @@ function Login() {
     try {
       const res = await loginUser({ email, password });
 
-      setUser(res);
+      console.log("LOGIN RESPONSE:", res);
+
+      setAuthUser(res);
       navigate(ROUTES.DASHBOARD);
     } catch (error) {
       console.error(error);
