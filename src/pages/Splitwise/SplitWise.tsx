@@ -9,6 +9,8 @@ const SplitWise = () => {
   const [debts, setDebts] = useState<SplitWiseDebt[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const isEmpty = debts.length === 0;
+
   useEffect(() => {
     const fetchDebts = async () => {
       try {
@@ -63,7 +65,21 @@ const SplitWise = () => {
     );
   }
 
-  return (
+  return isEmpty ? (
+    // 🔥 EMPTY STATE
+    <div className="flex flex-col items-center justify-center h-[70vh] text-center space-y-4">
+      <div className="text-4xl">🤝</div>
+
+      <h2 className="text-xl font-semibold">No Split Expenses Yet</h2>
+
+      <p className="text-muted-foreground max-w-sm">
+        Track money you owe or are owed by friends. Add your first entry to get
+        started.
+      </p>
+
+      <AddDebtModal onDebtAdded={handleDebtAdded} />
+    </div>
+  ) : (
     <>
       <div className="space-y-8">
         <div className="flex items-start justify-between gap-4">

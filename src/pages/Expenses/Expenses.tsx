@@ -101,62 +101,75 @@ const Expenses = () => {
 
   return (
     <>
-      <div className="flex flex-wrap gap-4 mb-6 items-center justify-between">
-        <div className="flex flex-wrap gap-4 items-center">
-          <SearchBox
-            placeholder="Search merchant..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="w-64"
-          />
+      {expenses.length > 0 && (
+        <div className="flex flex-wrap gap-4 mb-6 items-center justify-between">
+          <div className="flex flex-wrap gap-4 items-center">
+            <SearchBox
+              placeholder="Search merchant..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="w-64"
+            />
 
-          {/* Category Filter */}
-          <Select
-            value={selectedCategory}
-            onValueChange={(value) => {
-              setSelectedCategory(value);
-              setCurrentPage(1);
-            }}
-          >
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Filter by category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="All">All</SelectItem>
-              <SelectItem value="Food">Food</SelectItem>
-              <SelectItem value="Transport">Transport</SelectItem>
-              <SelectItem value="Shopping">Shopping</SelectItem>
-              <SelectItem value="Entertainment">Entertainment</SelectItem>
-            </SelectContent>
-          </Select>
+            {/* Category Filter */}
+            <Select
+              value={selectedCategory}
+              onValueChange={(value) => {
+                setSelectedCategory(value);
+                setCurrentPage(1);
+              }}
+            >
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Filter by category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All</SelectItem>
+                <SelectItem value="Food">Food</SelectItem>
+                <SelectItem value="Transport">Transport</SelectItem>
+                <SelectItem value="Shopping">Shopping</SelectItem>
+                <SelectItem value="Entertainment">Entertainment</SelectItem>
+              </SelectContent>
+            </Select>
 
-          {/* Sort Filter */}
-          <Select
-            value={sortOption}
-            onValueChange={(value) => setSortOption(value)}
-          >
-            <SelectTrigger className="w-52">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="date-desc">Newest</SelectItem>
-              <SelectItem value="date-asc">Oldest</SelectItem>
-              <SelectItem value="amount-desc">Highest Amount</SelectItem>
-              <SelectItem value="amount-asc">Lowest Amount</SelectItem>
-            </SelectContent>
-          </Select>
+            {/* Sort Filter */}
+            <Select
+              value={sortOption}
+              onValueChange={(value) => setSortOption(value)}
+            >
+              <SelectTrigger className="w-52">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="date-desc">Newest</SelectItem>
+                <SelectItem value="date-asc">Oldest</SelectItem>
+                <SelectItem value="amount-desc">Highest Amount</SelectItem>
+                <SelectItem value="amount-asc">Lowest Amount</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <AddExpenseModal onExpenseAdded={handleExpenseAdded} />
         </div>
-        <AddExpenseModal onExpenseAdded={handleExpenseAdded} />
-      </div>
-
+      )}
       {loading ? (
         <div className="flex justify-center items-center h-40 text-muted-foreground">
           Loading transactions...
         </div>
+      ) : expenses.length === 0 ? (
+        // 🔥 EMPTY STATE UI
+        <div className="flex flex-col items-center justify-center h-80 text-center space-y-4">
+          <div className="text-4xl">💸</div>
+          <h2 className="text-lg font-semibold">No Expenses Yet</h2>
+          <p className="text-muted-foreground max-w-sm">
+            Add your first expense to start tracking your spending
+          </p>
+
+          <AddExpenseModal onExpenseAdded={handleExpenseAdded} />
+        </div>
       ) : (
+        // ✅ NORMAL TABLE
         <TransactionTable
           data={paginatedData}
           currentPage={currentPage}

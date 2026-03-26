@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/sidebar";
 import logoFull from "@/assets/financeLogo-full.png";
 import logoIcon from "@/assets/financeLogo-icon.png";
+import { Link } from "react-router-dom";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
@@ -23,35 +24,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             isCollapsed ? "h-14" : "h-20"
           }`}
         >
-          <img
-            src={isCollapsed ? logoIcon : logoFull}
-            alt="FinScope"
-            className={`object-contain cursor-pointer transition-all duration-300 ease-in-out ${
-              isCollapsed
-                ? "w-5 h-5 scale-300" // 👈 perfect for icon view
-                : "w-35" // 👈 better proportion
-            }`}
-          />
+          <Link to="/dashboard">
+            <img
+              src={isCollapsed ? logoIcon : logoFull}
+              alt="FinScope"
+              className={`object-contain cursor-pointer transition-all duration-300 ease-in-out ${
+                isCollapsed
+                  ? "w-5 h-5 scale-300" // 👈 perfect for icon view
+                  : "w-35" // 👈 better proportion
+              }`}
+            />
+          </Link>
         </div>
       </SidebarHeader>
-      {/* <SidebarHeader>
-        <div
-          className={`flex items-center justify-center transition-all duration-300 ${
-            isCollapsed ? "h-14" : "h-20"
-          }`}
-        >
-          <img
-            src={isCollapsed ? logoIcon : logoFull}
-            alt="FinScope"
-            className={`object-contain transition-all duration-300 ${
-              isCollapsed
-                ? "w-5 h-5 scale-300" // 🔥 bigger + clean icon
-                : "w-35" // 🔥 better readable text
-            }`}
-          />
-        </div>
-      </SidebarHeader> */}
-
       <SidebarContent>
         <NavMain items={APP_SIDEBAR_NAV_CONFIG} />
       </SidebarContent>

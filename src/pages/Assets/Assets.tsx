@@ -18,6 +18,8 @@ const Assets = () => {
   const [assets, setAssets] = useState<Asset[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const isEmpty = assets.length === 0;
+
   //fetch on mount
   useEffect(() => {
     const fetchAssets = async () => {
@@ -73,7 +75,21 @@ const Assets = () => {
     );
   }
 
-  return (
+  return isEmpty ? (
+    // 🔥 EMPTY STATE
+    <div className="flex flex-col items-center justify-center h-[70vh] text-center space-y-4">
+      <div className="text-4xl">🏦</div>
+
+      <h2 className="text-xl font-semibold">No Assets Added</h2>
+
+      <p className="text-muted-foreground max-w-sm">
+        Start building your net worth by adding your first asset like bank
+        accounts, stocks, or mutual funds.
+      </p>
+
+      <AddAssetModal onAssetAdded={handleAssetAdded} />
+    </div>
+  ) : (
     <div className="space-y-8">
       {/* Total Assets */}
       <div className="flex items-center justify-between">
