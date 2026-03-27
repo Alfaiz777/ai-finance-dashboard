@@ -1,13 +1,20 @@
 import { Link } from "react-router-dom";
-import logo from "@/assets/financeLogo-full.png";
+import logo from "@/assets/financeLogo-icon.png";
 
 const LandingPage = () => {
   return (
-    <div className="bg-slate-950 text-white overflow-x-hidden">
+    <div className="bg-background text-foreground overflow-x-hidden">
       {/* 🔥 NAVBAR */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
-        <div className="flex items-center gap-2">
-          <img src={logo} className="w-8 h-8" />
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center">
+            <img
+              src={logo}
+              alt="FinScope"
+              className="w-6 h-6 object-contain scale-400"
+            />
+          </div>
+
           <span className="font-semibold text-lg">FinScope</span>
         </div>
 

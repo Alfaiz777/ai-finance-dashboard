@@ -50,7 +50,7 @@ const Header = () => {
   }
 
   return (
-    <header className="h-16 border-b bg-background px-6 flex items-center justify-between shadow-sm">
+    <header className="h-16 border-b border-border bg-background px-6 flex items-center justify-between">
       {/* LEFT */}
       <div className="flex items-center gap-3">
         <SidebarTrigger />

@@ -9,7 +9,7 @@ const columns: ColumnDef<Expense>[] = [
     accessorKey: "date",
     header: "Date",
     cell: ({ row }) => (
-      <span className="text-sm text-muted-foreground">
+      <span className="text-sm text-gray-400">
         {formatDate(row.original.date)}
       </span>
     ),
@@ -17,19 +17,34 @@ const columns: ColumnDef<Expense>[] = [
   {
     accessorKey: "merchant",
     header: "Merchant",
+    cell: ({ row }) => (
+      <span className="text-sm text-white font-medium">
+        {row.original.merchant}
+      </span>
+    ),
   },
   {
     accessorKey: "category",
     header: "Category",
+    cell: ({ row }) => (
+      <span className="text-xs px-2 py-1 rounded-md bg-white/10 text-gray-300">
+        {row.original.category}
+      </span>
+    ),
   },
   {
     accessorKey: "amount",
-    header: "Amount",
+    header: () => (
+      <div className="text-right pr-4">Amount</div> // ✅ add SAME padding
+    ),
     cell: ({ row }) => (
-      <div className="text-right font-semibold">
+      <div className="flex justify-end pr-4 font-semibold text-white tabular-nums tracking-tight">
         ₹ {row.original.amount.toLocaleString()}
       </div>
     ),
+    size: 120,
+    minSize: 100,
+    maxSize: 140,
   },
 ];
 
@@ -60,7 +75,7 @@ const RecentTransactions = ({ expenses }: RecentTransactionsProps) => {
       pageSize={PAGE_SIZE}
       totalItems={totalItems}
       onPageChange={setCurrentPage}
-      containerClassName="rounded-xl border bg-card shadow-sm"
+      containerClassName="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-lg shadow-black/30"
     />
   );
 };

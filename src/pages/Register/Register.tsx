@@ -39,8 +39,12 @@ const Register = () => {
       <div className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-xl">
         {/* LOGO */}
         <div className="flex justify-center mb-6">
-          <div className="bg-white p-3 rounded-xl border border-white/10">
-            <img src={logo} alt="FinScope" className="w-24 object-contain" />
+          <div className="bg-white p-3 rounded-full border border-white/10">
+            <img
+              src={logo}
+              alt="FinScope"
+              className="w-24 object-contain scale-150"
+            />
           </div>
         </div>
 

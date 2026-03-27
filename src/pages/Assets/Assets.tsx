@@ -77,12 +77,12 @@ const Assets = () => {
 
   return isEmpty ? (
     // 🔥 EMPTY STATE
-    <div className="flex flex-col items-center justify-center h-[70vh] text-center space-y-4">
-      <div className="text-4xl">🏦</div>
+    <div className="flex flex-col items-center justify-center h-[75vh] text-center space-y-5 rounded-xl border border-border/40 bg-background/40 backdrop-blur-xl">
+      <div className="text-5xl">🏦</div>
 
-      <h2 className="text-xl font-semibold">No Assets Added</h2>
+      <h2 className="text-xl font-semibold tracking-tight">No Assets Added</h2>
 
-      <p className="text-muted-foreground max-w-sm">
+      <p className="text-muted-foreground max-w-sm text-sm">
         Start building your net worth by adding your first asset like bank
         accounts, stocks, or mutual funds.
       </p>
@@ -92,14 +92,16 @@ const Assets = () => {
   ) : (
     <div className="space-y-8">
       {/* Total Assets */}
-      <div className="flex items-center justify-between">
-        <div className="rounded-xl border bg-card p-6 shadow-sm flex-1 mr-4">
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex-1 rounded-xl border border-border/40 bg-gradient-to-br from-primary/10 via-background/40 to-background/20 backdrop-blur-xl p-6 shadow-sm">
           <p className="text-sm text-muted-foreground">Total Assets</p>
-          <h1 className="text-3xl font-bold mt-2">
+          <h1 className="text-3xl font-bold mt-2 tracking-tight">
             ₹ {totalAssets.toLocaleString()}
           </h1>
         </div>
-        <AddAssetModal onAssetAdded={handleAssetAdded} />
+        <div className="flex items-center">
+          <AddAssetModal onAssetAdded={handleAssetAdded} />
+        </div>
       </div>
 
       {/* Bank Accounts */}
@@ -110,7 +112,7 @@ const Assets = () => {
             title={account.name}
             subtitle={`${account.institution} • ****${account.accountNumberLast4}`}
             amount={account.amount}
-            icon={<Landmark className="h-5 w-5 text-primary" />}
+            icon={<Landmark className="h-5 w-5" />}
             onDelete={() => handleAssetDeleted(account.id)}
           />
         ))}
@@ -171,7 +173,7 @@ const Assets = () => {
                 NAV: ₹ {mf.nav}
               </>
             }
-            icon={<PieChart className="h-5 w-5 text-blue-600" />}
+            icon={<PieChart className="h-5 w-5 text-blue-500" />}
             onDelete={() => handleAssetDeleted(mf.id)}
           />
         ))}

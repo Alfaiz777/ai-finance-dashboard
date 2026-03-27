@@ -20,7 +20,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <div
-          className={`flex items-center justify-center transition-all duration-300 ${
+          className={`flex items-center justify-center border-b border-border transition-all duration-300 ${
             isCollapsed ? "h-14" : "h-20"
           }`}
         >

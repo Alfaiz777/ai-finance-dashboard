@@ -16,7 +16,7 @@ const AppLayout = () => {
           <Header />
 
           {/* THIS IS IMPORTANT */}
-          <main className="flex-1 p-6 bg-muted/40">
+          <main className="flex-1 p-6 bg-background">
             <Outlet />
           </main>
 

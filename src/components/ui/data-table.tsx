@@ -64,7 +64,7 @@ export function DataTable<TData, TValue>({
           <LoaderCircle className="animate-spin w-8 h-8" />
         </div>
       ) : (
-        <Table>
+        <Table className="w-full table-fixed">
           {table.getRowModel().rows?.length ? (
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
