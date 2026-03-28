@@ -67,12 +67,14 @@ const SplitWise = () => {
 
   return isEmpty ? (
     // 🔥 EMPTY STATE
-    <div className="flex flex-col items-center justify-center h-[70vh] text-center space-y-4">
+    <div className="flex flex-col items-center justify-center h-[70vh] text-center space-y-5 rounded-xl border border-border/40 bg-background/40 backdrop-blur-xl shadow-sm">
       <div className="text-4xl">🤝</div>
 
-      <h2 className="text-xl font-semibold">No Split Expenses Yet</h2>
+      <h2 className="text-xl font-semibold tracking-tight">
+        No Split Expenses Yet
+      </h2>
 
-      <p className="text-muted-foreground max-w-sm">
+      <p className="text-muted-foreground max-w-sm text-sm">
         Track money you owe or are owed by friends. Add your first entry to get
         started.
       </p>
@@ -81,30 +83,32 @@ const SplitWise = () => {
     </div>
   ) : (
     <>
-      <div className="space-y-8">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <NetBalanceCard
-              totalYouOwe={totalYouOwe}
-              totalOwedToYou={totalOwedToYou}
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+        <div className="space-y-8 max-w-6xl mx-auto px-2">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 rounded-xl border border-border/40 bg-background/40 backdrop-blur-xl shadow-sm">
+            <div className="flex-1">
+              <NetBalanceCard
+                totalYouOwe={totalYouOwe}
+                totalOwedToYou={totalOwedToYou}
+              />
+            </div>
+            <AddDebtModal onDebtAdded={handleDebtAdded} />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <DebtList
+              title="You Owe"
+              data={youOweList}
+              type="you_owe"
+              onDelete={handleDebtDeleted}
+            />
+            <DebtList
+              title="They Owe You"
+              data={theyOweList}
+              type="they_owe"
+              onDelete={handleDebtDeleted}
             />
           </div>
-          <AddDebtModal onDebtAdded={handleDebtAdded} />
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <DebtList
-            title="You Owe"
-            data={youOweList}
-            type="you_owe"
-            onDelete={handleDebtDeleted}
-          />
-          <DebtList
-            title="They Owe You"
-            data={theyOweList}
-            type="they_owe"
-            onDelete={handleDebtDeleted}
-          />
         </div>
       </div>
     </>

@@ -116,7 +116,7 @@ const AddExpenseModal = ({ onExpenseAdded }: AddExpenseModalProps) => {
     <Dialog open={open} onOpenChange={setOpen}>
       {/* DialogTrigger — clicking this opens the dialog */}
       <DialogTrigger asChild>
-        <Button className="flex items-center gap-2">
+        <Button className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 shadow-lg shadow-blue-500/20 transition">
           <Plus className="h-4 w-4" />
           Add Expense
         </Button>

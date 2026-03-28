@@ -20,8 +20,8 @@ const AssetCard = ({
   onDelete,
 }: AssetCardProps) => {
   return (
-    <Card className="rounded-xl border border-border/40 bg-background/40 backdrop-blur-xl shadow-sm hover:shadow-lg hover:scale-[1.01] transition-all duration-300">
-      <CardContent className="p-5">
+    <Card className="relative rounded-xl bg-background/40 backdrop-blur-xl shadow-sm transition-all duration-300 hover:shadow-xl hover:scale-[1.02] border border-white/35 hover:border-primary/50 before:absolute before:inset-0 before:rounded-xl before:border before:border-transparent hover:before:border-primary/30 before:pointer-events-none">
+      <CardContent className="p-3">
         <div className="flex justify-between items-start">
           <div className="flex items-start gap-3">
             {icon && (
@@ -57,7 +57,7 @@ const AssetCard = ({
         </div>
 
         {extraInfo && (
-          <div className="mt-3 text-xs text-muted-foreground leading-relaxed border-t border-border/30 pt-3">
+          <div className="mt-2 text-xs text-muted-foreground leading-relaxed border-t border-border/30 pt-3">
             {extraInfo}
           </div>
         )}

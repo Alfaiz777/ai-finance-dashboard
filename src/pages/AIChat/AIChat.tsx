@@ -95,9 +95,9 @@ const AIChat = () => {
 
   return (
     <>
-      <div className="flex flex-col h-[80vh]">
+      <div className="flex flex-col h-[80vh] rounded-2xl border border-border/40 bg-background/40 backdrop-blur-xl shadow-sm overflow-hidden">
         {/* Message list */}
-        <div className="flex-1 overflow-y-auto space-y-4 p-4">
+        <div className="flex-1 overflow-y-auto space-y-6 p-6">
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -107,17 +107,17 @@ const AIChat = () => {
             >
               {msg.role === "assistant" && (
                 <Avatar className="h-8 w-8 shrink-0">
-                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                  <AvatarFallback className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs">
                     AI
                   </AvatarFallback>
                 </Avatar>
               )}
 
               <div
-                className={`max-w-xs rounded-xl px-4 py-2 text-sm ${
+                className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
                   msg.role === "user"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-foreground"
+                    ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white ml-auto"
+                    : "bg-background/60 border border-border/40 text-foreground"
                 }`}
               >
                 {/* Preserve line breaks in AI responses */}
@@ -131,7 +131,9 @@ const AIChat = () => {
 
               {msg.role === "user" && (
                 <Avatar className="h-8 w-8 shrink-0">
-                  <AvatarFallback className="text-xs">U</AvatarFallback>
+                  <AvatarFallback className="text-xs bg-muted">
+                    You
+                  </AvatarFallback>
                 </Avatar>
               )}
             </div>
@@ -145,7 +147,7 @@ const AIChat = () => {
                   AI
                 </AvatarFallback>
               </Avatar>
-              <div className="bg-muted rounded-xl px-4 py-3 text-sm text-muted-foreground">
+              <div className="bg-background/60 border border-border/40 rounded-2xl px-4 py-3 text-sm text-muted-foreground shadow-sm">
                 <span className="flex gap-1 items-center">
                   <span
                     className="animate-bounce"
@@ -173,12 +175,12 @@ const AIChat = () => {
           <div ref={bottomRef} />
         </div>
 
-        <div className="border-t p-4 flex gap-2">
+        <div className="border-t border-border/40 bg-background/60 backdrop-blur-xl p-4 flex gap-3">
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about your finances..."
-            className="flex-1"
+            className="flex-1 bg-background/50 border border-border/40 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all rounded-xl"
             disabled={isTyping} // disable while AI is responding
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
@@ -190,7 +192,7 @@ const AIChat = () => {
 
           <Button
             onClick={handleSend}
-            className="cursor-pointer"
+            className="cursor-pointer bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 text-white shadow-lg shadow-blue-500/20 px-6"
             disabled={isTyping || !input.trim()}
           >
             {isTyping ? "..." : "Send"}

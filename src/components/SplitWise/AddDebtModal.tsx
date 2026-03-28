@@ -72,18 +72,18 @@ const AddDebtModal = ({ onDebtAdded }: AddDebtModalProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="flex items-center gap-2">
+        <Button className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 shadow-lg shadow-blue-500/20 transition">
           <Plus className="h-4 w-4" />
           Add Entry
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="bg-background/80 backdrop-blur-xl border border-border/40 shadow-xl rounded-xl">
         <DialogHeader>
           <DialogTitle>Add Split Entry</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 pt-2">
+        <div className="space-y-5 pt-2">
           {/* Person Name */}
           <div>
             <label className="text-sm font-medium mb-1 block">
@@ -93,6 +93,7 @@ const AddDebtModal = ({ onDebtAdded }: AddDebtModalProps) => {
               placeholder="e.g. Rahul Shah, Priya Patel"
               value={form.personName}
               onChange={(e) => setForm({ ...form, personName: e.target.value })}
+              className="bg-background/40 border-border/40 focus:ring-2 focus:ring-primary/30 border-white/35"
             />
           </div>
 
@@ -104,6 +105,7 @@ const AddDebtModal = ({ onDebtAdded }: AddDebtModalProps) => {
               placeholder="e.g. 500"
               value={form.amount}
               onChange={(e) => setForm({ ...form, amount: e.target.value })}
+              className="bg-background/40 border-border/40 focus:ring-2 focus:ring-primary/30 border-white/35"
             />
           </div>
 
@@ -118,7 +120,7 @@ const AddDebtModal = ({ onDebtAdded }: AddDebtModalProps) => {
                 setForm({ ...form, direction: val as "you_owe" | "they_owe" })
               }
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full bg-background/40 border-border/40 backdrop-blur-md border-white/35">
                 <SelectValue placeholder="Select direction" />
               </SelectTrigger>
               <SelectContent>
@@ -152,10 +154,15 @@ const AddDebtModal = ({ onDebtAdded }: AddDebtModalProps) => {
               placeholder="e.g. Goa Trip, Flat Expenses, Dinner"
               value={form.groupName}
               onChange={(e) => setForm({ ...form, groupName: e.target.value })}
+              className="bg-background/40 border-border/40 focus:ring-2 focus:ring-primary/30 border-white/35"
             />
           </div>
 
-          <Button className="w-full" onClick={handleSubmit} disabled={loading}>
+          <Button
+            className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 transition shadow-lg shadow-blue-500/20"
+            onClick={handleSubmit}
+            disabled={loading}
+          >
             {loading ? "Adding..." : "Add Entry"}
           </Button>
         </div>

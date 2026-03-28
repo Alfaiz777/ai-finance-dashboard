@@ -38,29 +38,52 @@ const MonthlyIncomeCard = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Monthly Income</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <p className="text-sm text-muted-foreground">
-          Used to calculate your savings rate on the dashboard.
+    <Card className="rounded-2xl border border-border/40 bg-background/40 backdrop-blur-xl shadow-sm border-white/35">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-semibold tracking-tight">
+          Monthly Income
+        </CardTitle>
+        <p className="text-xs text-muted-foreground">
+          Used to calculate your savings rate and financial insights.
         </p>
-        <div className="flex gap-2">
-          <Input
-            type="number"
-            placeholder="Enter monthly income (₹)"
-            value={income}
-            onChange={(e) => setIncome(e.target.value)}
-            className="flex-1"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSave();
-            }}
-          />
-          <Button onClick={handleSave} disabled={saving}>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex items-center gap-3">
+          <div className="relative flex-1">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+              ₹
+            </span>
+            <Input
+              type="number"
+              placeholder="Enter monthly income (₹)"
+              value={income}
+              onChange={(e) => setIncome(e.target.value)}
+              className="pl-7 bg-background/50 border border-border/40 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all rounded-xl"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSave();
+              }}
+            />
+          </div>
+          <Button
+            onClick={handleSave}
+            disabled={saving}
+            className={`px-5 rounded-xl transition-all ${
+              saved
+                ? "bg-green-600 hover:bg-green-600 text-white"
+                : "bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 text-white shadow-lg shadow-blue-500/20"
+            }`}
+          >
             {saving ? "Saving..." : saved ? "Saved ✓" : "Save"}
           </Button>
         </div>
+        {income && Number(income) > 0 && (
+          <p className="text-xs text-muted-foreground">
+            Your monthly income is set to{" "}
+            <span className="text-foreground font-medium">
+              ₹ {Number(income).toLocaleString()}
+            </span>
+          </p>
+        )}
       </CardContent>
     </Card>
   );

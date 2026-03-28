@@ -167,14 +167,14 @@ const AddAssetModal = ({ onAssetAdded }: AddAssetModalProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="flex items-center gap-2">
+        <Button className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 shadow-lg shadow-blue-500/20 transition">
           <Plus className="h-4 w-4" />
           Add Asset
         </Button>
       </DialogTrigger>
 
       {/* overflow-y-auto handles long forms on small screens */}
-      <DialogContent className="max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] overflow-y-auto bg-background/80 backdrop-blur-xl border border-border/40 shadow-xl rounded-xl">
         <DialogHeader>
           <DialogTitle>Add New Asset</DialogTitle>
         </DialogHeader>
@@ -184,7 +184,7 @@ const AddAssetModal = ({ onAssetAdded }: AddAssetModalProps) => {
           <div>
             <label className="text-sm font-medium mb-1 block">Asset Type</label>
             <Select value={assetType} onValueChange={setAssetType}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full bg-background/40 border-border/40 backdrop-blur-md border-white/35">
                 <SelectValue placeholder="Select type first" />
               </SelectTrigger>
               <SelectContent>
@@ -213,6 +213,7 @@ const AddAssetModal = ({ onAssetAdded }: AddAssetModalProps) => {
                   }
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  className="bg-background/40 border-border/40 focus:ring-2 focus:ring-primary/30 border-white/35"
                 />
               </div>
 
@@ -229,6 +230,7 @@ const AddAssetModal = ({ onAssetAdded }: AddAssetModalProps) => {
                   placeholder="e.g. 50000"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
+                  className="bg-background/40 border-border/40 focus:ring-2 focus:ring-primary/30 border-white/35"
                 />
               </div>
 
@@ -244,6 +246,7 @@ const AddAssetModal = ({ onAssetAdded }: AddAssetModalProps) => {
                   }
                   value={institution}
                   onChange={(e) => setInstitution(e.target.value)}
+                  className="bg-background/40 border-border/40 focus:ring-2 focus:ring-primary/30 border-white/35"
                 />
               </div>
             </>
@@ -257,7 +260,7 @@ const AddAssetModal = ({ onAssetAdded }: AddAssetModalProps) => {
                   Account Type
                 </label>
                 <Select value={accountType} onValueChange={setAccountType}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full bg-background/40 border-border/40 backdrop-blur-md border-white/35">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -280,6 +283,7 @@ const AddAssetModal = ({ onAssetAdded }: AddAssetModalProps) => {
                     const val = e.target.value.replace(/\D/g, "");
                     setAccountNumberLast4(val);
                   }}
+                  className="bg-background/40 border-border/40 focus:ring-2 focus:ring-primary/30 border-white/35"
                 />
               </div>
             </>
@@ -297,6 +301,7 @@ const AddAssetModal = ({ onAssetAdded }: AddAssetModalProps) => {
                   placeholder="e.g. 7.5"
                   value={interestRate}
                   onChange={(e) => setInterestRate(e.target.value)}
+                  className="bg-background/40 border-border/40 focus:ring-2 focus:ring-primary/30 border-white/35"
                 />
               </div>
 
@@ -308,6 +313,7 @@ const AddAssetModal = ({ onAssetAdded }: AddAssetModalProps) => {
                   type="date"
                   value={maturityDate}
                   onChange={(e) => setMaturityDate(e.target.value)}
+                  className="bg-background/40 border-border/40 focus:ring-2 focus:ring-primary/30 border-white/35"
                 />
               </div>
             </>
@@ -324,6 +330,7 @@ const AddAssetModal = ({ onAssetAdded }: AddAssetModalProps) => {
                   placeholder="e.g. RELIANCE, TCS, INFY"
                   value={ticker}
                   onChange={(e) => setTicker(e.target.value.toUpperCase())}
+                  className="bg-background/40 border-border/40 focus:ring-2 focus:ring-primary/30 border-white/35"
                 />
               </div>
 
@@ -336,6 +343,7 @@ const AddAssetModal = ({ onAssetAdded }: AddAssetModalProps) => {
                   placeholder="e.g. 10"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
+                  className="bg-background/40 border-border/40 focus:ring-2 focus:ring-primary/30 border-white/35"
                 />
               </div>
 
@@ -348,6 +356,7 @@ const AddAssetModal = ({ onAssetAdded }: AddAssetModalProps) => {
                   placeholder="e.g. 2200"
                   value={buyPrice}
                   onChange={(e) => setBuyPrice(e.target.value)}
+                  className="bg-background/40 border-border/40 focus:ring-2 focus:ring-primary/30 border-white/35"
                 />
               </div>
 
@@ -363,6 +372,7 @@ const AddAssetModal = ({ onAssetAdded }: AddAssetModalProps) => {
                   placeholder="Leave empty to use buy price"
                   value={currentPrice}
                   onChange={(e) => setCurrentPrice(e.target.value)}
+                  className="bg-background/40 border-border/40 focus:ring-2 focus:ring-primary/30 border-white/35"
                 />
               </div>
             </>
@@ -380,6 +390,7 @@ const AddAssetModal = ({ onAssetAdded }: AddAssetModalProps) => {
                   placeholder="e.g. 245.6"
                   value={units}
                   onChange={(e) => setUnits(e.target.value)}
+                  className="bg-background/40 border-border/40 focus:ring-2 focus:ring-primary/30 border-white/35"
                 />
               </div>
 
@@ -392,6 +403,7 @@ const AddAssetModal = ({ onAssetAdded }: AddAssetModalProps) => {
                   placeholder="e.g. 98.4"
                   value={nav}
                   onChange={(e) => setNav(e.target.value)}
+                  className="bg-background/40 border-border/40 focus:ring-2 focus:ring-primary/30 border-white/35"
                 />
               </div>
             </>

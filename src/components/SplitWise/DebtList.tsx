@@ -15,46 +15,50 @@ const DebtList = ({
   onDelete?: (id: string) => void;
 }) => {
   return (
-    <Card className="rounded-xl shadow-sm">
-      <CardContent className="p-6 space-y-4">
-        <h3 className="font-semibold">{title}</h3>
+    <Card className="rounded-xl border border-border/40 bg-background/40 backdrop-blur-xl shadow-sm border-white/35">
+      <CardContent className="p-3 space-y-4">
+        <h3 className="font-semibold text-sm tracking-tight">{title}</h3>
 
         {data.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No records</p>
+          <p className="text-sm text-muted-foreground text-center py-6">
+            No records
+          </p>
         ) : (
-          data.map((debt) => (
-            <div
-              key={debt.id}
-              className="flex justify-between items-center border-b pb-2"
-            >
-              <div>
-                <p className="font-medium">{debt.personName}</p>
-                <p className="text-xs text-muted-foreground">
-                  {debt.groupName}
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <span
-                  className={`font-semibold ${
-                    type === "you_owe" ? "text-red-500" : "text-green-600"
-                  }`}
-                >
-                  ₹ {debt.amount.toLocaleString()}
-                </span>
-                {/* Delete button — only shows if onDelete is passed */}
-                {onDelete && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-red-400 hover:text-red-600 hover:bg-red-50 h-7 w-7"
-                    onClick={() => onDelete(debt.id)}
+          <div className="space-y-3">
+            {data.map((debt) => (
+              <div
+                key={debt.id}
+                className="flex justify-between items-center p-3 rounded-lg border border-border/30 bg-background/30 hover:bg-background/50 transition-all"
+              >
+                <div>
+                  <p className="font-medium text-sm">{debt.personName}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {debt.groupName}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`font-semibold text-sm ${
+                      type === "you_owe" ? "text-red-400" : "text-green-400"
+                    }`}
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
-                )}
+                    ₹ {debt.amount.toLocaleString()}
+                  </span>
+                  {/* Delete button — only shows if onDelete is passed */}
+                  {onDelete && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-red-400 hover:text-red-500 hover:bg-red-500/10 h-7 w-7"
+                      onClick={() => onDelete(debt.id)}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </CardContent>
     </Card>

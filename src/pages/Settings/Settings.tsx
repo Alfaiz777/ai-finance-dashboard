@@ -86,38 +86,54 @@ const Settings = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10 max-w-5xl">
       {/* ── Financial Preferences ─────────────────────────── */}
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold">Financial Preferences</h2>
-        <MonthlyIncomeCard />
+      <section className="space-y-5">
+        <h2 className="text-lg font-semibold tracking-tight">
+          Financial Preferences
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          Configure your income and budgeting setup.
+        </p>
+        <div className="rounded-2xl border border-border/40 bg-background/40 backdrop-blur-xl p-5 shadow-sm">
+          <MonthlyIncomeCard />
+        </div>
       </section>
 
       {/* ── Integrations ──────────────────────────────────── */}
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold">Integrations</h2>
+      <section className="space-y-5">
+        <h2 className="text-lg font-semibold tracking-tight">Integrations</h2>
+        <p className="text-sm text-muted-foreground">
+          Connect external services to automate your financial tracking.
+        </p>
 
-        {/* Gmail Integration */}
-        <IntegrationCard
-          title="Gmail"
-          description="Automatically parse bank transaction emails to track expenses."
-          icon={<Mail className="h-5 w-5" />}
-          connected={gmailConnected}
-          onConnect={handleConnectGmail}
-          onDisconnect={handleDisconnectGmail}
-          onSync={handleSyncGmail}
-          syncing={syncing}
-          syncResult={syncResult}
-        />
+        <div className="grid gap-5 md:grid-cols-2 items-stretch">
+          {/* Gmail Integration */}
+          <div className="rounded-2xl border border-border/40 bg-background/40 backdrop-blur-xl p-5 shadow-sm hover:shadow-md transition-all">
+            <IntegrationCard
+              title="Gmail"
+              description="Automatically parse bank transaction emails to track expenses."
+              icon={<Mail className="h-5 w-5" />}
+              connected={gmailConnected}
+              onConnect={handleConnectGmail}
+              onDisconnect={handleDisconnectGmail}
+              onSync={handleSyncGmail}
+              syncing={syncing}
+              syncResult={syncResult}
+            />
+          </div>
 
-        {/* Splitwise — manual entry only */}
-        <IntegrationCard
-          title="Splitwise"
-          description="Track shared expenses manually using the Split & Owe page."
-          icon={<Users className="h-5 w-5" />}
-          connected={false}
-          comingSoon
-        />
+          {/* Splitwise — manual entry only */}
+          <div className="rounded-2xl border border-border/40 bg-background/40 backdrop-blur-xl p-5 shadow-sm opacity-80">
+            <IntegrationCard
+              title="Splitwise"
+              description="Track shared expenses manually using the Split & Owe page."
+              icon={<Users className="h-5 w-5" />}
+              connected={false}
+              comingSoon
+            />
+          </div>
+        </div>
       </section>
     </div>
   );
