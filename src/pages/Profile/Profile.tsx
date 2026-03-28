@@ -42,53 +42,57 @@ const Profile = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 p-6">
       <div className="max-w-3xl mx-auto space-y-6">
         {/* HEADER */}
-        <div>
-          <h1 className="text-3xl font-bold text-white">Profile</h1>
-          <p className="text-gray-400 text-sm">
+        <div className="space-y-2">
+          <h1 className="text-2xl font-semibold text-white tracking-tight">
+            Profile
+          </h1>
+          <p className="text-muted-foreground text-sm">
             Manage your personal information
           </p>
         </div>
 
         {/* PROFILE CARD */}
-        <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 flex items-center gap-4 shadow-lg">
-          <Avatar className="h-16 w-16">
+        <div className="rounded-2xl border border-border/40 bg-background/40 backdrop-blur-xl p-6 shadow-sm flex items-center gap-5">
+          <Avatar className="h-16 w-16 border border-border/40 shadow-sm">
             <AvatarImage src={user?.avatar} />
-            <AvatarFallback className="text-lg">
+            <AvatarFallback className="text-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
               {getInitials(user?.name)}
             </AvatarFallback>
           </Avatar>
 
-          <div>
+          <div className="space-y-1">
             <h2 className="text-xl font-semibold text-white">{user?.name}</h2>
-            <p className="text-gray-400 text-sm">{user?.email}</p>
+            <p className="text-muted-foreground text-sm">{user?.email}</p>
           </div>
         </div>
 
         {/* EDIT SECTION */}
-        <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 shadow-lg space-y-4">
-          <h3 className="text-lg font-semibold text-white">Edit Profile</h3>
+        <div className="rounded-2xl border border-border/40 bg-background/40 backdrop-blur-xl p-6 shadow-sm space-y-6">
+          <h3 className="text-lg font-semibold text-white tracking-tight">
+            Edit Profile
+          </h3>
 
           <div className="space-y-2">
-            <label className="text-sm text-gray-400">Full Name</label>
+            <label className="text-sm text-muted-foreground">Full Name</label>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="bg-white/10 border-white/10 text-white"
+              className="bg-background/50 border border-border/40 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all rounded-xl"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm text-gray-400">Email</label>
+            <label className="text-sm text-gray-400">Email Address</label>
             <Input
               value={user?.email}
               disabled
-              className="bg-white/10 border-white/10 text-gray-400"
+              className="bg-muted/30 border border-border/40 text-muted-foreground rounded-xl"
             />
           </div>
 
           <Button
             onClick={handleUpdate}
-            className="mt-2 bg-blue-600 hover:bg-blue-700"
+            className="px-6 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 text-white shadow-lg shadow-blue-500/20"
           >
             {loading ? "Saving..." : "Save Changes"}
           </Button>
