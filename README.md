@@ -1,268 +1,330 @@
+<div align="center">
+
 # 💰 AI Finance Dashboard
 
-> Managing personal finances across multiple platforms is fragmented.
->
-> This project explores how a modern fintech dashboard can aggregate financial data, generate insights, and provide an AI-powered financial advisor — all within a clean and scalable architecture.
+**A full-stack AI-powered fintech dashboard that aggregates financial data, automates expense tracking, and provides intelligent insights — built with modern SaaS architecture.**
 
-A modern fintech-style personal finance dashboard that aggregates financial data from multiple sources and transforms it into clear insights. The application allows users to track expenses, monitor assets, manage shared debts, and interact with an AI-powered financial advisor — all from a single interface.
+</div>
 
 ---
 
-## 📌 Project Status
+## 🌐 Live Demo
 
-- ✅ Frontend UI — In Progress (UI refinements underway)
-- 🔜 Frontend Deployment — Coming Soon
-- 🔜 Screenshots & Live Demo — Coming Soon
-- 🔜 Backend Development — Next Phase
+👉 **[https://ai-finance-dashboard-xi.vercel.app/](https://ai-finance-dashboard-xi.vercel.app/)**
 
 ---
 
-## 🚀 Features
+## 🚀 Overview
 
-### 📊 Dashboard Overview
+Managing personal finances across multiple platforms is fragmented — bank apps, UPI, emails, investments, and shared expenses all live in different places.
 
-Quick snapshot of the user's financial health.
+This project solves that by building a **unified finance dashboard** that:
+
+- 📦 Aggregates financial data in one place
+- 📩 Automates expense tracking via Gmail parsing
+- 🤖 Provides AI-powered financial insights
+- 📊 Visualizes financial health with a clean SaaS UI
+
+---
+
+## 📸 Screenshots
+
+| Dashboard                                | Transactions                                  |
+| ---------------------------------------- | --------------------------------------------- |
+| ![Dashboard](./src/assets/dashboard.png) | ![Transactions](./src/assets/Transaction.png) |
+
+| Analytics                               | Assets                             |
+| --------------------------------------- | ---------------------------------- |
+| ![Analytics](./src/assets/Analysis.png) | ![Assets](./src/assets/Assets.png) |
+
+| Split & Owe                                | AI Chat                             |
+| ------------------------------------------ | ----------------------------------- |
+| ![Split & Owe](./src/assets/Split&owe.png) | ![AI Chat](./src/assets/AIChat.png) |
+
+<div align="center">
+
+| Settings                               |
+| -------------------------------------- |
+| ![Settings](./src/assets/settings.png) |
+
+</div>
+
+---
+
+## ✨ Features
+
+<details>
+<summary><b>📊 Dashboard Overview</b></summary>
+<br>
 
 - Net Worth summary
-- Monthly expenses and savings
-- Total debt overview
-- Category spending pie chart
-- Monthly spending trend
-- Recent transactions preview
+- Monthly expenses & savings
+- Debt overview
+- Expense category pie chart
+- Monthly trend chart
+- Recent transactions
 
-### 💳 Transactions Management
+</details>
 
-Complete expense inspection interface.
+<details>
+<summary><b>💳 Transactions Management</b></summary>
+<br>
 
-- Search transactions by merchant
+- Add / Delete expenses
+- Search by merchant
 - Filter by category
-- Sort by amount or date
-- Pagination for large datasets
-- Clean table UI using reusable components
+- Sort by date / amount
+- Pagination support
 
-### 📈 Spend Analysis
+</details>
 
-Transforms raw financial data into insights.
+<details>
+<summary><b>📈 Spend Analysis</b></summary>
+<br>
 
-- Expense breakdown by category
+- Category-wise breakdown
 - Monthly spending trends
-- Top spending merchants
-- Key financial insight cards
+- Insight-driven charts
 
-### 💼 Assets Tracker
+</details>
 
-Displays the user's total wealth across multiple asset classes.
+<details>
+<summary><b>💼 Assets Management</b></summary>
+<br>
 
-Assets supported: Bank accounts · Fixed deposits · Stocks · Mutual funds
+Supports:
 
-Each asset displays important metadata like investment value, maturity date (FDs), and profit/loss indicators.
+- Bank Accounts
+- Fixed Deposits
+- Stocks
+- Mutual Funds
 
-### 🤝 Split & Owe
+Includes:
 
-Track shared expenses and debts.
+- Profit/Loss tracking
+- Maturity details
+- Investment insights
 
-- Who you owe
-- Who owes you
+</details>
+
+<details>
+<summary><b>🤝 Split & Owe</b></summary>
+<br>
+
+- Track who you owe
+- Track who owes you
 - Net balance calculation
-- Financial position indicator with color-coded feedback
 
-### 🤖 AI Financial Advisor
+</details>
 
-Interactive chat interface to ask questions about finances.
+<details>
+<summary><b>🤖 AI Financial Advisor</b></summary>
+<br>
 
-- Chat-style conversation UI
-- AI and user message bubbles
-- Typing animation
-- Avatars for conversation roles
-- Auto-scrolling messages
+- Chat-based interface
+- AI powered via OpenRouter
+- Financial insights based on user data
 
-> Currently uses simulated responses. Real AI integration will be implemented in the backend phase.
+</details>
 
-### ⚙️ Settings & Integrations
+<details>
+<summary><b>📩 Gmail Expense Automation 🔥</b></summary>
+<br>
 
-Control how financial data enters the system.
+- Google OAuth integration
+- Fetch Gmail transaction emails
+- Parse expenses using regex
+- Automatically store expenses
+
+```
+Email → Parsed → Saved → Dashboard Updated
+```
+
+</details>
+
+<details>
+<summary><b>⚙️ Settings</b></summary>
+<br>
 
 - Monthly income configuration
-- Gmail integration for automated expense tracking
-- Splitwise integration for shared debt tracking
-- Integration status indicators
+- Gmail integration & sync
+
+</details>
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+
+| Technology               | Purpose              |
+| ------------------------ | -------------------- |
+| React + TypeScript       | UI framework         |
+| Tailwind CSS + shadcn/ui | Styling & components |
+| Recharts                 | Data visualization   |
+| React Router             | Client-side routing  |
+| Lucide Icons             | Icon library         |
+
+### Backend
+
+| Technology           | Purpose             |
+| -------------------- | ------------------- |
+| Node.js + Express.js | Server & REST API   |
+| MongoDB (Mongoose)   | Database            |
+| JWT                  | Authentication      |
+| Google APIs (Gmail)  | Email parsing       |
+| OpenRouter AI API    | AI-powered insights |
 
 ---
 
 ## 🏗 System Architecture
 
 ```
-User
-   ↓
-React Frontend (TypeScript + TailwindCSS)
-   ↓
-Backend API (Next Phase — Node.js + Express)
-   ↓
-Database (MongoDB)
-   ↓
-External Integrations
-   ├── Gmail API       → Automated expense parsing
-   └── Splitwise API   → Shared debt syncing
-        ↓
-AI Layer (LLM Integration)
-   └── Personalized financial insights
+React Frontend
+      ↓
+Service Layer (API abstraction)
+      ↓
+Axios (JWT Authentication)
+      ↓
+Node.js + Express Backend
+      ↓
+Controllers + Middleware
+      ↓
+MongoDB Database
+      ↓
+External APIs
+   ├── Gmail API (Expense Parsing)
+   └── OpenRouter AI API
 ```
 
 ---
 
-## 🧠 Frontend Architecture
-
-The frontend is designed using modular SaaS-style architecture with clear separation of concerns.
+## 🔄 Data Flow
 
 ```
-src/
- ├── pages/
- │    ├── Dashboard
- │    ├── Transactions
- │    ├── Spend Analysis
- │    ├── Assets
- │    ├── Split & Owe
- │    ├── AI Advisor
- │    └── Settings
- │
- ├── components/
- │    ├── layout/
- │    ├── charts/
- │    ├── tables/
- │    ├── assets/
- │    ├── splitwise/
- │    └── settings/
- │
- └── utils/
-      └── financial calculations
+User Action
+      ↓
+React Component
+      ↓
+Service Layer
+      ↓
+API Request (JWT attached)
+      ↓
+Express Backend
+      ↓
+MongoDB
+      ↓
+Response → UI Update
 ```
 
 ---
 
-## 🧩 Engineering Patterns Used
+## 🧠 Key Engineering Concepts
 
-This project demonstrates several important frontend engineering patterns:
+### Frontend
 
-- **Component-driven architecture** — reusable, self-contained UI components
-- **Derived financial calculations** — computed values from raw transaction data
-- **Data transformation pipelines** — filter → search → sort → paginate
-- **Integration management UI** — status indicators and connection controls
-- **Reusable chart components** — shared Recharts wrappers for consistent visuals
-- **Modular feature-based folder structure** — scalable and maintainable codebase
+- Component-driven architecture
+- State-driven UI
+- Data pipelines (filter → search → sort)
+- Protected routing
+- Service-based API layer
 
----
+### Backend
 
-## 🧮 Financial Calculation Engine
+- REST API design
+- JWT authentication
+- Middleware architecture
+- MongoDB schema design
+- Controller-based structure
 
-Custom utility functions power the analytics layer:
+### Full Stack
 
-- Monthly expense aggregation
-- Total asset calculation
-- Net worth computation
-- Savings calculation
-- Category-based spending breakdown
-- Monthly spending trends
-
-These calculations power charts, insights, and dashboard summaries across the entire app.
-
----
-
-## 🛠 Tech Stack
-
-| Technology   | Purpose             |
-| ------------ | ------------------- |
-| React        | UI framework        |
-| TypeScript   | Type safety         |
-| TailwindCSS  | Styling             |
-| shadcn/ui    | Component library   |
-| Recharts     | Data visualization  |
-| Lucide Icons | Icon set            |
-| React Router | Client-side routing |
+- End-to-end data flow
+- API integration
+- Auth token handling
+- Real-time UI updates
 
 ---
 
 ## ⚙️ Run Locally
 
-**Clone the project**
+### 1. Clone the repo
 
 ```bash
 git clone https://github.com/your-username/ai-finance-dashboard.git
-```
-
-**Go to project directory**
-
-```bash
 cd ai-finance-dashboard
 ```
 
-**Install dependencies**
+### 2. Start the Frontend
 
 ```bash
+cd frontend
 npm install
-```
-
-**Start development server**
-
-```bash
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+### 3. Start the Backend
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+### 4. Environment Variables
+
+Create a `.env` file in `/backend`:
+
+```env
+MONGO_URI=your_mongo_uri
+JWT_SECRET=your_secret
+GOOGLE_CLIENT_ID=xxx
+GOOGLE_CLIENT_SECRET=xxx
+GOOGLE_REDIRECT_URI=http://localhost:5000/api/gmail/callback
+```
 
 ---
 
-## 🔜 Next Phase — Backend Development
+## 📈 What Makes This Project Stand Out
 
-The next phase will focus on building the data and intelligence layer of the platform.
+| Feature             | Details                                       |
+| ------------------- | --------------------------------------------- |
+| 🏗 Full-Stack       | React + Node.js + MongoDB end-to-end          |
+| 🤖 AI-Powered       | OpenRouter-based financial advisor            |
+| 📩 Gmail Automation | Rare feature — auto-parses transaction emails |
+| 🎨 SaaS UI          | Clean, production-grade design                |
+| 🔐 Auth             | JWT-secured protected routes                  |
 
-### 📩 Gmail Expense Parsing
+---
 
-- Connect Gmail API
-- Scan payment confirmation emails
-- Extract transaction details using regex/NLP
-- Automatically add expenses to the dashboard
+## 🔮 Future Improvements
 
-### 🤝 Splitwise Integration
+- [ ] 📱 SMS / UPI expense tracking
+- [ ] 🧠 AI-based expense categorization
+- [ ] 🔄 Background sync via cron jobs
+- [ ] 📊 Advanced analytics
+- [ ] 🎯 Financial goal tracking
 
-- Fetch shared debts via API
-- Sync owed balances automatically
+---
 
-### 🧠 AI Financial Advisor
+## ⚠️ Note
 
-- Integrate LLM APIs
-- Allow AI to analyze real financial data
-- Generate personalized insights and spending suggestions
-
-### 🗄 Database Layer
-
-- Store transactions and assets
-- Store user financial preferences
-- Maintain historical financial records
-
-**Backend stack:** Node.js · Express · MongoDB · AI API integration
+> UI improvements are still in progress. Some UX refinements and polishing are ongoing.
 
 ---
 
 ## 🎯 Project Goal
 
-The goal of this project is to demonstrate how a modern fintech dashboard can be designed from scratch, focusing on:
+To demonstrate how to build a **modern AI-powered fintech dashboard** with clean architecture, real integrations, scalable design, and strong product thinking.
 
-- Clean frontend architecture
-- Financial data modeling
-- Scalable component systems
-- Analytics-driven UI
-- AI-ready interface design
+```
+UI → Backend → APIs → AI → Automation
+```
 
 ---
 
-## 📌 Future Improvements
+<div align="center">
 
-- Real-time financial insights
-- AI-driven spending analysis
-- Automatic expense categorization
-- Asset allocation visualization
-- Financial goal tracking
+⭐ **If you found this interesting, feel free to explore, fork, or give feedback!**
 
----
-
-⭐ If you found this project interesting, feel free to explore the code or share feedback!
+</div>
