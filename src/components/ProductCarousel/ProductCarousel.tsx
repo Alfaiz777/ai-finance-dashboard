@@ -58,9 +58,9 @@ export const ProductCarousel = () => {
             />
 
             {/* 🔥 OVERLAY TITLE */}
-            <div className="absolute bottom-0 left-0 right-0 bg-black/40 backdrop-blur-md p-3 text-sm">
+            {/* <div className="absolute bottom-0 left-0 right-0 bg-black/40 backdrop-blur-md p-3 text-sm">
               {slides[index].title}
-            </div>
+            </div> */}
           </div>
         </motion.div>
       </AnimatePresence>
