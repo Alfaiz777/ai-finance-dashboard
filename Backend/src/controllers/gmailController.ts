@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { google } from "googleapis";
 import User from "../models/User";
 import { parseGmailEmails } from "../services/gmailService";
+import { encrypt, decrypt } from "../utils/encryption";
 
 // Creates the OAuth client — reused across functions
 const createOAuthClient = () => {
@@ -41,8 +42,12 @@ export const handleGmailCallback = async (req: Request, res: Response) => {
 
     // Save tokens to user's record in database
     await User.findByIdAndUpdate(userId, {
-      gmailAccessToken: tokens.access_token,
-      gmailRefreshToken: tokens.refresh_token,
+      gmailAccessToken: tokens.access_token
+        ? encrypt(tokens.access_token)
+        : null,
+      gmailRefreshToken: tokens.refresh_token
+        ? encrypt(tokens.refresh_token)
+        : null,
       gmailConnected: true,
     });
 
@@ -65,15 +70,19 @@ export const syncGmail = async (req: any, res: Response) => {
 
     const oauth2Client = createOAuthClient();
     oauth2Client.setCredentials({
-      access_token: user.gmailAccessToken ?? undefined,
-      refresh_token: user.gmailRefreshToken ?? null,
+      access_token: user.gmailAccessToken
+        ? decrypt(user.gmailAccessToken)
+        : null,
+      refresh_token: user.gmailRefreshToken
+        ? decrypt(user.gmailRefreshToken)
+        : null,
     });
 
     // Auto-refresh token if expired
     oauth2Client.on("tokens", async (tokens) => {
       if (tokens.access_token) {
         await User.findByIdAndUpdate(req.user.id, {
-          gmailAccessToken: tokens.access_token,
+          gmailAccessToken: encrypt(tokens.access_token),
         });
       }
     });

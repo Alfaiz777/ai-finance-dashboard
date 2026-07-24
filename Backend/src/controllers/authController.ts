@@ -2,15 +2,29 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import User from "../models/User";
 import { generateToken } from "../utils/jwt";
+import { z } from "zod";
+
+const registerSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+const loginSchema = z.object({
+  email: z.string().email("Invalid email"),
+  password: z.string().min(1, "Password is required"),
+});
 
 export const registerUser = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+  const parsed = registerSchema.safeParse(req.body);
 
-  if (!name || !email || !password) {
+  if (!parsed.success) {
     return res.status(400).json({
-      message: "Please provide name, email and password",
+      message: parsed.error.issues[0]?.message || "Invalid input",
     });
   }
+
+  const { name, email, password } = parsed.data;
 
   try {
     const userExists = await User.findOne({ email });
@@ -41,7 +55,15 @@ export const registerUser = async (req: Request, res: Response) => {
 };
 
 export const loginUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const parsed = loginSchema.safeParse(req.body);
+
+  if (!parsed.success) {
+    return res.status(400).json({
+      message: parsed.error.issues[0]?.message || "Invalid input",
+    });
+  }
+
+  const { email, password } = parsed.data;
 
   try {
     const user = await User.findOne({ email });

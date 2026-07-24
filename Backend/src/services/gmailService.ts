@@ -204,8 +204,6 @@ export const parseGmailEmails = async (
       continue;
     }
 
-    console.log("EMAIL TEXT:", emailText);
-
     // ✅ Fixed — explicit string type annotation
     const dateHeader = emailData.payload?.headers?.find(
       (h: any) => h.name?.toLowerCase() === "date",
@@ -221,8 +219,6 @@ export const parseGmailEmails = async (
       skipped++;
       continue;
     }
-
-    console.log("PARSED RESULT:", parsed);
 
     // Save to database
     try {

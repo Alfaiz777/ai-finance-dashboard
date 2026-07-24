@@ -14,8 +14,6 @@ export const getAIResponse = async (
     // ✅ Check env FIRST
     const apiKey = process.env.OPENROUTER_API_KEY;
 
-    console.log("OPENROUTER KEY:", apiKey);
-
     if (!apiKey) {
       throw new Error("OPENROUTER_API_KEY is missing in .env");
     }

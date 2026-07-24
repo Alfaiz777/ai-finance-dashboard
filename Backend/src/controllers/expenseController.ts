@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Expense from "../models/Expense";
+import { z } from "zod";
 
 // Helper — converts MongoDB _id to id for frontend consistency
 const normalize = (doc: any) => {
@@ -10,6 +11,15 @@ const normalize = (doc: any) => {
     _id: undefined, // remove _id so frontend only sees id
   };
 };
+
+const createExpenseSchema = z.object({
+  amount: z.coerce.number().positive("Amount must be positive"),
+  merchant: z.string().min(1, "Merchant is required"),
+  category: z.string().min(1, "Category is required"),
+  date: z.string().min(1, "Date is required"),
+  paymentMethod: z.string().min(1, "Payment method is required"),
+  gmailMessageId: z.string().optional(),
+});
 
 export const getExpense = async (req: any, res: Response) => {
   try {
@@ -27,12 +37,18 @@ export const getExpense = async (req: any, res: Response) => {
 
 export const createExpense = async (req: any, res: Response) => {
   try {
+    const parsed = createExpenseSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      return res.status(400).json({
+        message: parsed.error.issues[0]?.message || "Invalid expense data",
+      });
+    }
+
     const { amount, merchant, category, date, paymentMethod, gmailMessageId } =
-      req.body;
+      parsed.data;
 
-    console.log("Expense Body:", req.body);
-
-    const expenseData = await Expense.create({
+    const expenseData: any = {
       userId: req.user.id,
       amount,
       merchant,
@@ -40,7 +56,7 @@ export const createExpense = async (req: any, res: Response) => {
       date,
       paymentMethod,
       source: "manual",
-    });
+    };
     // Only add if exists (VERY IMPORTANT)
     if (gmailMessageId) {
       expenseData.gmailMessageId = gmailMessageId;
