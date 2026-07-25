@@ -42,11 +42,19 @@ export const registerUser = async (req: Request, res: Response) => {
       password: hashedPassword,
     });
 
+    const token = generateToken(user._id.toString());
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     res.status(201).json({
       id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id.toString()),
     });
   } catch (error: any) {
     console.error(error);
@@ -78,13 +86,31 @@ export const loginUser = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    const token = generateToken(user._id.toString());
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     res.json({
       id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id.toString()),
     });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
+};
+
+export const logoutUser = async (req: Request, res: Response) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  });
+
+  res.json({ message: "Logged out" });
 };

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import SplitWiseDebt from "../models/SplitWiseDebt";
+import { z } from "zod";
 
 const normalize = (doc: any) => {
   const obj = doc.toObject ? doc.toObject() : doc;
@@ -9,6 +10,13 @@ const normalize = (doc: any) => {
     _id: undefined,
   };
 };
+
+const createDebtSchema = z.object({
+  personName: z.string().min(1, "Person name is required"),
+  amount: z.coerce.number().positive("Amount must be positive"),
+  direction: z.enum(["you_owe", "owes_you"]),
+  groupName: z.string().optional(),
+});
 
 export const getDebts = async (req: any, res: Response) => {
   try {
@@ -23,17 +31,28 @@ export const getDebts = async (req: any, res: Response) => {
 };
 
 export const createDebt = async (req: any, res: Response) => {
-  const { personName, amount, direction, groupName } = req.body;
+  const parsed = createDebtSchema.safeParse(req.body);
+
+  if (!parsed.success) {
+    return res.status(400).json({
+      message: parsed.error.issues[0]?.message || "Invalid debt data",
+    });
+  }
 
   try {
-    const debt = await SplitWiseDebt.create({
+    const debtData: any = {
       userId: req.user.id,
-      personName,
-      amount,
-      direction,
-      groupName,
+      personName: parsed.data.personName,
+      amount: parsed.data.amount,
+      direction: parsed.data.direction,
       currency: "INR",
-    });
+    };
+
+    if (parsed.data.groupName !== undefined) {
+      debtData.groupName = parsed.data.groupName;
+    }
+
+    const debt = await SplitWiseDebt.create(debtData);
 
     res.status(201).json(normalize(debt));
   } catch (error) {

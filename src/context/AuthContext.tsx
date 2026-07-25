@@ -5,7 +5,7 @@ import type { User } from "@/types/index";
 type AuthContextType = {
   user: User | null;
   setAuthUser: (data: any) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
   loading: boolean;
 };
 
@@ -23,13 +23,7 @@ export const AuthProvider = ({ children }: any) => {
       setUser(JSON.parse(storedUser));
     }
 
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      fetchUser(); // verify from backend
-    } else {
-      setLoading(false);
-    }
+    fetchUser();
   }, []);
 
   // ✅ Fetch latest user from backend
@@ -40,15 +34,15 @@ export const AuthProvider = ({ children }: any) => {
       setUser(res.data);
       localStorage.setItem("user", JSON.stringify(res.data)); // keep synced
     } catch (error) {
-      console.error("Fetch user failed");
-      logout();
+      localStorage.removeItem("user");
+      setUser(null);
     } finally {
       setLoading(false);
     }
   };
 
   const setAuthUser = (data: any) => {
-    if (!data || !data.token) {
+    if (!data) {
       console.error("Invalid auth data:", data);
       return;
     }
@@ -66,13 +60,17 @@ export const AuthProvider = ({ children }: any) => {
 
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("token", data.token);
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user"); // 🔥 IMPORTANT
-    setUser(null);
+  const logout = async () => {
+    try {
+      await API.post("/auth/logout");
+    } catch (error) {
+      console.error("Logout failed");
+    } finally {
+      localStorage.removeItem("user");
+      setUser(null);
+    }
   };
 
   return (

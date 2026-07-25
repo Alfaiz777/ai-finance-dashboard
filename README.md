@@ -258,7 +258,6 @@ cd ai-finance-dashboard
 ### 2. Start the Frontend
 
 ```bash
-cd frontend
 npm install
 npm run dev
 ```
@@ -266,21 +265,24 @@ npm run dev
 ### 3. Start the Backend
 
 ```bash
-cd backend
+cd Backend
 npm install
 npm run dev
 ```
 
 ### 4. Environment Variables
 
-Create a `.env` file in `/backend`:
+Create a `.env` file in `/Backend`:
 
 ```env
 MONGO_URI=your_mongo_uri
-JWT_SECRET=your_secret
-GOOGLE_CLIENT_ID=xxx
-GOOGLE_CLIENT_SECRET=xxx
+JWT_SECRET=your_long_random_jwt_secret
+ENCRYPTION_SECRET=your_long_random_encryption_secret
+FRONTEND_URL=http://localhost:5173
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
 GOOGLE_REDIRECT_URI=http://localhost:5000/api/gmail/callback
+OPENROUTER_API_KEY=your_openrouter_api_key
 ```
 
 ---

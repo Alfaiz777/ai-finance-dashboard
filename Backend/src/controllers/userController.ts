@@ -1,5 +1,16 @@
 import { Request, Response } from "express";
 import User from "../models/User";
+import { z } from "zod";
+
+const incomeSchema = z.object({
+  monthlyIncome: z.coerce
+    .number()
+    .nonnegative("Monthly income cannot be negative"),
+});
+
+const profileSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+});
 
 export const getUserProfile = async (req: any, res: Response) => {
   const user = await User.findById(req.user.id).select("-password");
@@ -12,8 +23,15 @@ export const getUserProfile = async (req: any, res: Response) => {
 };
 
 export const updateIncome = async (req: any, res: Response) => {
-  const { monthlyIncome } = req.body;
+  const parsed = incomeSchema.safeParse(req.body);
 
+  if (!parsed.success) {
+    return res.status(400).json({
+      message: parsed.error.issues[0]?.message || "Invalid income",
+    });
+  }
+
+  const { monthlyIncome } = parsed.data;
   try {
     const user = await User.findById(req.user.id);
 
@@ -42,7 +60,15 @@ export const updateProfile = async (req: any, res: Response) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    user.name = req.body.name || user.name;
+    const parsed = profileSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      return res.status(400).json({
+        message: parsed.error.issues[0]?.message || "Invalid profile data",
+      });
+    }
+
+    user.name = parsed.data.name;
 
     const updatedUser = await user.save();
 

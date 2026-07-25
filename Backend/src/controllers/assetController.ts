@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Asset from "../models/Asset";
+import { z } from "zod";
 
 // Same normalize helper as expenses — converts _id to id
 const normalize = (doc: any) => {
@@ -10,6 +11,15 @@ const normalize = (doc: any) => {
     _id: undefined,
   };
 };
+
+const createAssetSchema = z.object({
+  name: z.string().min(1, "Asset name is required"),
+  type: z.string().min(1, "Asset type is required"),
+  amount: z.coerce.number().nonnegative("Amount cannot be negative"),
+  buyPrice: z.coerce.number().optional(),
+  currentPrice: z.coerce.number().optional(),
+  maturityDate: z.string().optional(),
+});
 
 export const getAssets = async (req: any, res: Response) => {
   try {
@@ -24,12 +34,35 @@ export const getAssets = async (req: any, res: Response) => {
 };
 
 export const createAsset = async (req: any, res: Response) => {
-  try {
-    const asset = await Asset.create({
-      userId: req.user.id,
-      ...req.body,
-      lastUpdated: new Date().toISOString().split("T")[0],
+  const parsed = createAssetSchema.safeParse(req.body);
+
+  if (!parsed.success) {
+    return res.status(400).json({
+      message: parsed.error.issues[0]?.message || "Invalid asset data",
     });
+  }
+  try {
+    const assetData: any = {
+      userId: req.user.id,
+      name: parsed.data.name,
+      type: parsed.data.type,
+      amount: parsed.data.amount,
+      lastUpdated: new Date().toISOString().split("T")[0],
+    };
+
+    if (parsed.data.buyPrice !== undefined) {
+      assetData.buyPrice = parsed.data.buyPrice;
+    }
+
+    if (parsed.data.currentPrice !== undefined) {
+      assetData.currentPrice = parsed.data.currentPrice;
+    }
+
+    if (parsed.data.maturityDate !== undefined) {
+      assetData.maturityDate = parsed.data.maturityDate;
+    }
+
+    const asset = await Asset.create(assetData);
 
     res.status(201).json(normalize(asset));
   } catch (error) {
