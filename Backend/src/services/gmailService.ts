@@ -42,7 +42,7 @@ const BANK_SENDERS = [
 ];
 
 // ── Auto-categorize based on merchant name ─────────────────────
-const categorizeExpense = (merchant: string): string => {
+export const categorizeExpense = (merchant: string): string => {
   const m = merchant.toLowerCase();
 
   if (/swiggy|zomato|dominos|pizza|mcdonald|kfc|restaurant|cafe|food/.test(m))
@@ -65,7 +65,7 @@ const categorizeExpense = (merchant: string): string => {
 };
 
 // ── Clean amount string — "1,299.00" → 1299 ───────────────────
-const parseAmount = (amountStr: string): number => {
+export const parseAmount = (amountStr: string): number => {
   return parseFloat(amountStr.replace(/,/g, ""));
 };
 
@@ -100,7 +100,7 @@ const extractEmailText = (payload: any): string => {
 };
 
 // ── Parse one email — returns expense data or null ────────────
-const parseEmail = (
+export const parseEmail = (
   emailText: string,
   emailDate: string,
 ): {
