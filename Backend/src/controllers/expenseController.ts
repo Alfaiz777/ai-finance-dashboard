@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Expense from "../models/Expense";
+import { categorizeExpense as categorizeExpenseAI } from "../services/aiService";
 import { z } from "zod";
 
 // Helper — converts MongoDB _id to id for frontend consistency
@@ -63,6 +64,15 @@ export const createExpense = async (req: any, res: Response) => {
     }
 
     const expense = await Expense.create(expenseData);
+
+    categorizeExpenseAI(`${merchant} ${amount}`)
+      .then(async (aiCategory) => {
+        expense.category = aiCategory;
+        await expense.save();
+      })
+      .catch((error) => {
+        console.error("AI categorization failed:", error);
+      });
 
     // Normalize before sending back so frontend gets id not _id
     res.status(201).json(normalize(expense));

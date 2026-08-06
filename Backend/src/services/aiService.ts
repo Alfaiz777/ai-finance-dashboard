@@ -5,6 +5,59 @@ import SplitWiseDebt from "../models/SplitWiseDebt";
 import AIChats from "../models/AIChats";
 import User from "../models/User";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
+import {
+  ExpenseCategory,
+  EXPENSE_CATEGORIES,
+  isExpenseCategory,
+} from "../constants/expenseCategories";
+
+export const categorizeExpense = async (
+  description: string,
+): Promise<ExpenseCategory> => {
+  const apiKey = process.env.OPENROUTER_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("OPENROUTER_API_KEY is missing in .env");
+  }
+
+  const client = new OpenAI({
+    apiKey,
+    baseURL: "https://openrouter.ai/api/v1",
+  });
+
+  const completion = await client.chat.completions.create({
+    model: "openrouter/free",
+    temperature: 0,
+    messages: [
+      {
+        role: "system",
+        content: `
+        You categorize expense descriptions.
+
+        Return exactly one category from the following list: ${EXPENSE_CATEGORIES.join(", ")}.
+
+        Rules:
+        - Return only the category name.
+        - Do not explain.
+        - Do not add punctuation.
+        - If unsure, return "Other".
+        `.trim(),
+      },
+      {
+        role: "user",
+        content: description,
+      },
+    ],
+  });
+
+  const category = completion.choices?.[0]?.message?.content?.trim();
+
+  if (category && isExpenseCategory(category)) {
+    return category;
+  }
+
+  return "Other";
+};
 
 export const getAIResponse = async (
   userId: string,
