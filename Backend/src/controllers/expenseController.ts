@@ -22,6 +22,18 @@ const createExpenseSchema = z.object({
   gmailMessageId: z.string().optional(),
 });
 
+const withTimeout = <T>(promise: Promise<T>, timeoutMs: number): Promise<T> => {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(
+        () => reject(new Error("AI categorization timed out")),
+        timeoutMs,
+      ),
+    ),
+  ]);
+};
+
 export const getExpense = async (req: any, res: Response) => {
   try {
     const expenses = await Expense.find({ userId: req.user.id }).sort({
@@ -58,23 +70,29 @@ export const createExpense = async (req: any, res: Response) => {
       paymentMethod,
       source: "manual",
     };
-    // Only add if exists (VERY IMPORTANT)
+    // Only add if exists
     if (gmailMessageId) {
       expenseData.gmailMessageId = gmailMessageId;
     }
 
+    // 1. SAVE EXPENSE FIRST
     const expense = await Expense.create(expenseData);
 
-    categorizeExpenseAI(`${merchant} ${amount}`)
+    // 2. Start AI categorization in the background, but don't block response
+
+    withTimeout(categorizeExpenseAI(`${merchant} ${amount}`), 5000)
       .then(async (aiCategory) => {
-        expense.category = aiCategory;
-        await expense.save();
+        // 3.UPDATE ONLY THE CATEGORY
+        await Expense.findByIdAndUpdate(expense._id, {
+          category: aiCategory,
+        });
       })
       .catch((error) => {
+        // 4. AI FAILURE DOES NOT AFFECT THE SAVED EXPENSE
         console.error("AI categorization failed:", error);
       });
 
-    // Normalize before sending back so frontend gets id not _id
+    // 5. RESPOND IMMEDIATELY
     res.status(201).json(normalize(expense));
   } catch (error) {
     console.error(error);
