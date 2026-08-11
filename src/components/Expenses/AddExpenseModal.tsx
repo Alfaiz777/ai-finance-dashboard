@@ -18,20 +18,17 @@ import {
 import { createExpense } from "@/services/expenseService";
 import type { Expense, ExpenseCategory } from "@/types";
 import { Plus } from "lucide-react";
+import { EXPENSE_CATEGORIES } from "@/shared/expenseCategories";
 
-// ── Constants defined outside component so they don't recreate on render
-const CATEGORIES: ExpenseCategory[] = [
-  "Food",
-  "Transport",
-  "Entertainment",
-  "Shopping",
-  "Health",
-  "Utilities",
-  "Education",
-  "Travel",
-  "Investment",
-  "Other",
-];
+const AUTO_DETECT_CATEGORY = "__auto_detect__";
+
+const CATEGORY_OPTIONS = [
+  { value: AUTO_DETECT_CATEGORY, label: "Auto-detect (AI will categorize)" },
+  ...EXPENSE_CATEGORIES.map((category) => ({
+    value: category,
+    label: category,
+  })),
+] as const;
 
 const PAYMENT_METHODS = [
   { value: "upi", label: "UPI" },
@@ -57,7 +54,7 @@ const AddExpenseModal = ({ onExpenseAdded }: AddExpenseModalProps) => {
   const [form, setForm] = useState({
     amount: "",
     merchant: "",
-    category: "" as ExpenseCategory | "",
+    category: "" as ExpenseCategory | typeof AUTO_DETECT_CATEGORY | "",
     date: new Date().toISOString().split("T")[0], // today's date as default
     paymentMethod: "",
   });
@@ -79,14 +76,19 @@ const AddExpenseModal = ({ onExpenseAdded }: AddExpenseModalProps) => {
 
     try {
       // Call the service — hits POST /api/expenses
-      const newExpense = await createExpense({
-        amount: Number(form.amount), // convert string to number
+      const expensePayload: any = {
+        amount: Number(form.amount),
         merchant: form.merchant,
-        category: form.category,
         date: form.date,
         paymentMethod: form.paymentMethod,
         source: "manual",
-      });
+      };
+
+      if (form.category !== AUTO_DETECT_CATEGORY) {
+        expensePayload.category = form.category;
+      }
+
+      const newExpense = await createExpense(expensePayload);
 
       // Tell the parent about the new expense
       // Parent will prepend it to the expenses list
@@ -156,16 +158,21 @@ const AddExpenseModal = ({ onExpenseAdded }: AddExpenseModalProps) => {
             <Select
               value={form.category}
               onValueChange={(val) =>
-                setForm({ ...form, category: val as ExpenseCategory })
+                setForm({
+                  ...form,
+                  category: val as
+                    | ExpenseCategory
+                    | typeof AUTO_DETECT_CATEGORY,
+                })
               }
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
-                {CATEGORIES.map((cat) => (
-                  <SelectItem key={cat} value={cat}>
-                    {cat}
+                {CATEGORY_OPTIONS.map((cat) => (
+                  <SelectItem key={cat.value} value={cat.value}>
+                    {cat.label}
                   </SelectItem>
                 ))}
               </SelectContent>

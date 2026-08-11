@@ -16,7 +16,7 @@ const normalize = (doc: any) => {
 const createExpenseSchema = z.object({
   amount: z.coerce.number().positive("Amount must be positive"),
   merchant: z.string().min(1, "Merchant is required"),
-  category: z.string().min(1, "Category is required"),
+  category: z.string().min(1, "Category cannot be empty").optional(),
   date: z.string().min(1, "Date is required"),
   paymentMethod: z.string().min(1, "Payment method is required"),
   gmailMessageId: z.string().optional(),
@@ -61,11 +61,27 @@ export const createExpense = async (req: any, res: Response) => {
     const { amount, merchant, category, date, paymentMethod, gmailMessageId } =
       parsed.data;
 
+    let finalCategory = category;
+    let aiCategorized = false;
+
+    if (!finalCategory || finalCategory.trim() === "") {
+      try {
+        finalCategory = await withTimeout(
+          categorizeExpenseAI(`$(merchant) $(amount)`),
+          5000,
+        );
+        aiCategorized = true;
+      } catch (error) {
+        console.error("AI categorization failed:", error);
+        finalCategory = "Other";
+      }
+    }
+
     const expenseData: any = {
       userId: req.user.id,
       amount,
       merchant,
-      category,
+      category: finalCategory,
       date,
       paymentMethod,
       source: "manual",
@@ -75,25 +91,9 @@ export const createExpense = async (req: any, res: Response) => {
       expenseData.gmailMessageId = gmailMessageId;
     }
 
-    // 1. SAVE EXPENSE FIRST
     const expense = await Expense.create(expenseData);
 
-    // 2. Start AI categorization in the background, but don't block response
-
-    withTimeout(categorizeExpenseAI(`${merchant} ${amount}`), 5000)
-      .then(async (aiCategory) => {
-        // 3.UPDATE ONLY THE CATEGORY
-        await Expense.findByIdAndUpdate(expense._id, {
-          category: aiCategory,
-        });
-      })
-      .catch((error) => {
-        // 4. AI FAILURE DOES NOT AFFECT THE SAVED EXPENSE
-        console.error("AI categorization failed:", error);
-      });
-
-    // 5. RESPOND IMMEDIATELY
-    res.status(201).json(normalize(expense));
+    res.status(201).json({ ...normalize(expense), aiCategorized });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });

@@ -13,19 +13,9 @@ export interface Expense {
   onDelete?: (id: string) => void;
 }
 
-// Using a union type here instead of plain string
-// This prevents typos like "food" vs "Food" vs "FOOD"
-export type ExpenseCategory =
-  | "Food"
-  | "Transport"
-  | "Entertainment"
-  | "Shopping"
-  | "Health"
-  | "Utilities"
-  | "Education"
-  | "Travel"
-  | "Investment"
-  | "Other";
+import type { ExpenseCategory } from "@/shared/expenseCategories";
+
+export type { ExpenseCategory };
 
 // ─── ASSETS ─────────────────────────────────────────────────
 // Everything you own that has monetary value
