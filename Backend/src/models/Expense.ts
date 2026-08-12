@@ -38,7 +38,7 @@ const expenseSchema = new mongoose.Schema(
 
     paymentMethod: {
       type: String,
-      enum: ["upi", "credit_card", "debit_card", "cash", "netbanking"],
+      enum: ["upi", "credit_card", "debit_card", "cash", "net_banking"],
     },
 
     gmailMessageId: {
@@ -50,7 +50,10 @@ const expenseSchema = new mongoose.Schema(
 
 expenseSchema.index(
   { userId: 1, gmailMessageId: 1 },
-  { unique: true, sparse: true },
+  {
+    unique: true,
+    partialFilterExpression: { gmailMessageId: { $type: "string" } },
+  },
 );
 
 export default mongoose.model("Expense", expenseSchema);

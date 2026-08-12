@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Expense from "../models/Expense";
 import { categorizeExpense as categorizeExpenseAI } from "../services/aiService";
+import { EXPENSE_CATEGORIES } from "../constants/expenseCategories";
 import { z } from "zod";
 
 // Helper — converts MongoDB _id to id for frontend consistency
@@ -16,9 +17,18 @@ const normalize = (doc: any) => {
 const createExpenseSchema = z.object({
   amount: z.coerce.number().positive("Amount must be positive"),
   merchant: z.string().min(1, "Merchant is required"),
-  category: z.string().min(1, "Category cannot be empty").optional(),
+  category: z
+    .enum(EXPENSE_CATEGORIES, {
+      message: "Invalid category",
+    })
+    .optional(),
   date: z.string().min(1, "Date is required"),
-  paymentMethod: z.string().min(1, "Payment method is required"),
+  paymentMethod: z.enum(
+    ["upi", "credit_card", "debit_card", "cash", "net_banking"],
+    {
+      message: "Invalid payment method",
+    },
+  ),
   gmailMessageId: z.string().optional(),
 });
 
@@ -67,8 +77,8 @@ export const createExpense = async (req: any, res: Response) => {
     if (!finalCategory || finalCategory.trim() === "") {
       try {
         finalCategory = await withTimeout(
-          categorizeExpenseAI(`$(merchant) $(amount)`),
-          5000,
+          categorizeExpenseAI(`${merchant} ${amount}`),
+          10000,
         );
         aiCategorized = true;
       } catch (error) {

@@ -52,9 +52,14 @@ export const categorizeExpense = async (
 
   const category = completion.choices?.[0]?.message?.content?.trim();
 
+  console.log("Expense description:", description);
+  console.log("Raw AI response:", category);
+
   if (category && isExpenseCategory(category)) {
     return category;
   }
+
+  console.log("AI response was invalid, falling back to Other");
 
   return "Other";
 };
