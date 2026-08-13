@@ -95,6 +95,7 @@ export const createExpense = async (req: any, res: Response) => {
       date,
       paymentMethod,
       source: "manual",
+      aiCategorized,
     };
     // Only add if exists
     if (gmailMessageId) {
@@ -102,6 +103,11 @@ export const createExpense = async (req: any, res: Response) => {
     }
 
     const expense = await Expense.create(expenseData);
+
+    console.log("FINAL RESPONSE:", {
+      ...normalize(expense),
+      aiCategorized,
+    });
 
     res.status(201).json({ ...normalize(expense), aiCategorized });
   } catch (error) {

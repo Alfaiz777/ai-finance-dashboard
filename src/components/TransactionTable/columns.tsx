@@ -3,7 +3,7 @@ import type { Expense } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/utils/helper";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Trash2, Sparkles } from "lucide-react";
 
 export const transactionColumns: ColumnDef<Expense>[] = [
   {
@@ -28,11 +28,21 @@ export const transactionColumns: ColumnDef<Expense>[] = [
     accessorKey: "category",
     header: "Category",
     cell: ({ row }) => (
-      <div className="flex justify-start">
+      <div className="flex items-center gap-2">
         <Badge variant="secondary">{row.original.category}</Badge>
+
+        {row.original.aiCategorized && (
+          <span
+            className="inline-flex items-center gap-1 text-xs font-medium text-violet-300"
+            title="Categorized by AI"
+          >
+            <Sparkles className="h-3.5 w-3.5" />
+            AI
+          </span>
+        )}
       </div>
     ),
-    size: 140,
+    size: 160,
   },
   {
     accessorKey: "amount",

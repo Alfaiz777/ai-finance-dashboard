@@ -11,6 +11,7 @@ export interface Expense {
   paymentMethod: "upi" | "credit_card" | "debit_card" | "cash" | "net_banking";
   description?: string; // optional extra note
   onDelete?: (id: string) => void;
+  aiCategorized?: boolean; // true if category was assigned by AI, false if user selected it
 }
 
 import type { ExpenseCategory } from "@/shared/expenseCategories";
