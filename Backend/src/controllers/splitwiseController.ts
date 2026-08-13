@@ -14,7 +14,7 @@ const normalize = (doc: any) => {
 const createDebtSchema = z.object({
   personName: z.string().min(1, "Person name is required"),
   amount: z.coerce.number().positive("Amount must be positive"),
-  direction: z.enum(["you_owe", "they_you"]),
+  direction: z.enum(["you_owe", "they_owe"]),
   groupName: z.string().optional(),
 });
 
