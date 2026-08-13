@@ -4,7 +4,7 @@ import {
   createDebt,
   getDebts,
   deleteDebt,
-} from "../controllers/SplitwiseController";
+} from "../controllers/splitwiseController";
 
 const router = express.Router();
 
