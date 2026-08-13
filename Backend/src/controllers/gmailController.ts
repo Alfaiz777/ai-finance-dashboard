@@ -28,10 +28,12 @@ export const getGmailAuthUrl = async (req: any, res: Response) => {
 
 // Step 2 — Google redirects here after user gives permission
 export const handleGmailCallback = async (req: Request, res: Response) => {
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+
   const { code, state: userId } = req.query;
 
   if (!code || !userId) {
-    return res.redirect("http://localhost:5173/settings?error=auth_failed");
+    return res.redirect(`${frontendUrl}/settings?error=auth_failed`);
   }
 
   try {
@@ -52,10 +54,10 @@ export const handleGmailCallback = async (req: Request, res: Response) => {
     });
 
     // Redirect back to frontend settings page with success
-    res.redirect("http://localhost:5173/settings?gmail=connected");
+    res.redirect(`${frontendUrl}/settings?gmail=connected`);
   } catch (error) {
     console.error("Gmail OAuth error:", error);
-    res.redirect("http://localhost:5173/settings?error=auth_failed");
+    res.redirect(`${frontendUrl}/settings?error=auth_failed`);
   }
 };
 
